@@ -917,6 +917,7 @@
                 </div>
 
                 <button class="clear-btn" onclick="clearHistory()">Clear History</button>
+                <button class="clear-btn" onclick="resetPersonalBest()" style="border-color: rgba(0, 220, 255, 0.3); color: var(--accent);">Reset Personal Best</button>
             </div>
         </div>
     </main>
@@ -1312,6 +1313,13 @@
             if (confirm('Clear all history?')) {
                 localStorage.removeItem('dmgHistory');
                 document.getElementById('historyList').innerHTML = '<div class="history-empty">No calculations yet</div>';
+            }
+        }
+
+        function resetPersonalBest() {
+            if (confirm('Reset personal best?')) {
+                localStorage.removeItem('maxDmgValue');
+                document.getElementById('maxLabel').textContent = '0.000x';
             }
         }
 
