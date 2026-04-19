@@ -57,7 +57,6 @@
             position: relative;
         }
 
-        /* Background effects - MUST have pointer-events: none */
         body::before {
             content: '';
             position: fixed;
@@ -962,6 +961,9 @@
             font-weight: 700; 
             color: var(--text); 
             word-break: break-word;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .lb-score {
@@ -979,6 +981,28 @@
             white-space: nowrap;
         }
 
+        /* NEW: Delete button for each row */
+        .lb-delete-btn {
+            background: rgba(255, 59, 92, 0.1);
+            border: 1px solid rgba(255, 59, 92, 0.3);
+            color: var(--danger);
+            font-size: 16px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: all 0.2s;
+            line-height: 1;
+            opacity: 0.6;
+            flex-shrink: 0;
+        }
+
+        .lb-delete-btn:hover {
+            background: var(--danger);
+            color: #fff;
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
         .placeholder-row td,
         .loading-row td {
             text-align: center;
@@ -990,14 +1014,12 @@
 
         .loading-row td { color: var(--accent); }
 
-        .refresh-lb-btn {
+        .refresh-lb-btn,
+        .reset-lb-btn {
             width: 100%;
             margin-top: 16px;
             padding: 14px;
             border-radius: 8px;
-            background: linear-gradient(135deg, var(--gold-dim), rgba(255, 215, 0, 0.05));
-            border: 1px solid rgba(255, 215, 0, 0.3);
-            color: var(--gold);
             font-family: 'Syne', sans-serif;
             font-size: 14px;
             font-weight: 700;
@@ -1009,7 +1031,28 @@
             touch-action: manipulation;
         }
 
-        .refresh-lb-btn:active { transform: scale(0.97); }
+        .refresh-lb-btn {
+            background: linear-gradient(135deg, var(--gold-dim), rgba(255, 215, 0, 0.05));
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            color: var(--gold);
+        }
+
+        .reset-lb-btn {
+            background: linear-gradient(135deg, rgba(255, 59, 92, 0.1), rgba(255, 59, 92, 0.05));
+            border: 1px solid rgba(255, 59, 92, 0.3);
+            color: var(--danger);
+            margin-top: 12px;
+        }
+
+        .refresh-lb-btn:active,
+        .reset-lb-btn:active { 
+            transform: scale(0.97); 
+        }
+
+        .reset-lb-btn:hover {
+            background: linear-gradient(135deg, rgba(255, 59, 92, 0.2), rgba(255, 59, 92, 0.1));
+            border-color: rgba(255, 59, 92, 0.5);
+        }
 
         /* ═══════════════ MODALS ═══════════════ */
         .modal-overlay {
@@ -1018,7 +1061,7 @@
             background: rgba(0,0,0,0.75);
             backdrop-filter: blur(6px);
             -webkit-backdrop-filter: blur(6px);
-            display: none; /* HIDDEN BY DEFAULT */
+            display: none; 
             justify-content: center;
             align-items: center;
             z-index: 9999;
@@ -1026,7 +1069,7 @@
         }
 
         .modal-overlay.active {
-            display: flex; /* ONLY SHOW WHEN ACTIVE CLASS IS ADDED */
+            display: flex; 
         }
 
         .modal {
@@ -1041,7 +1084,6 @@
             position: relative;
         }
 
-        /* CLOSE BUTTON */
         .modal-close-btn {
             position: absolute;
             top: 12px;
@@ -1476,6 +1518,7 @@
             .live-text p { font-size: 12px; }
             .confirm-modal .conf-buttons { flex-direction: column; }
             .admin-remove-input-group { flex-direction: column; }
+            .lb-delete-btn { font-size: 14px; padding: 3px 6px; }
         }
 
         @media (max-width: 480px) {
@@ -1503,7 +1546,7 @@
             .artifact-grid { grid-template-columns: 1fr; gap: 6px; }
             .artifact-item { padding: 8px 10px; }
             .leaderboard-table th, .leaderboard-table td { padding: 12px 14px; font-size: 12px; }
-            .refresh-lb-btn { padding: 12px; font-size: 13px; min-height: 48px; }
+            .refresh-lb-btn, .reset-lb-btn { padding: 12px; font-size: 13px; min-height: 48px; }
             .modal { padding: 24px 20px; margin: 16px; }
             .confirm-modal .conf-scores { flex-direction: column; gap: 10px; }
             .confirm-modal .conf-score-item { min-width: auto; }
@@ -1829,20 +1872,26 @@
                                 <th>Player</th>
                                 <th>Score</th>
                                 <th style="width:120px;">Date</th>
+                                <th style="width:50px;" id="lbActionHeader" style="display:none;">Action</th>
                             </tr>
                         </thead>
                         <tbody id="leaderboardBody">
-                            <tr class="loading-row"><td colspan="4">Loading...</td></tr>
+                            <tr class="loading-row"><td colspan="5">Loading...</td></tr>
                         </tbody>
                     </table>
                 </div>
 
                 <button class="refresh-lb-btn" onclick="loadLeaderboard()">🔄 Refresh Leaderboard</button>
+                
+                <!-- NEW: Reset Button on Leaderboard Page -->
+                <button class="reset-lb-btn" id="resetLbBtn" onclick="showResetConfirm()" style="display:none;">
+                    ⚠️ Reset Entire Leaderboard (Admin Only)
+                </button>
             </div>
         </div>
     </main>
 
-    <!-- ERROR MODAL WITH CLOSE BUTTON -->
+    <!-- ERROR MODAL -->
     <div class="modal-overlay error-overlay" id="errorOverlay" onclick="handleOverlayClick(event)">
         <div class="modal error-modal">
             <button class="modal-close-btn" onclick="hideError()">✕</button>
@@ -1853,7 +1902,7 @@
         </div>
     </div>
 
-    <!-- SUCCESS MODAL WITH CLOSE BUTTON -->
+    <!-- SUCCESS MODAL -->
     <div class="modal-overlay success-overlay" id="successOverlay">
         <div class="modal success-modal">
             <button class="modal-close-btn" onclick="hideSuccess()">✕</button>
@@ -1864,14 +1913,12 @@
         </div>
     </div>
 
-    <!-- AUTH MODAL (Login/Register) WITH CLOSE BUTTON -->
+    <!-- AUTH MODAL -->
     <div class="modal-overlay auth-overlay" id="authOverlay">
-        <div class="modal auth-modal" id="authModalContent">
-            <!-- Content injected via JS - will include close button -->
-        </div>
+        <div class="modal auth-modal" id="authModalContent"></div>
     </div>
 
-    <!-- CONFIRM UPDATE MODAL WITH CLOSE BUTTON -->
+    <!-- CONFIRM UPDATE MODAL -->
     <div class="modal-overlay confirm-overlay" id="confirmOverlay">
         <div class="modal confirm-modal">
             <button class="modal-close-btn" onclick="hideConfirm()">✕</button>
@@ -1897,7 +1944,7 @@
         </div>
     </div>
 
-    <!-- ADMIN LOGIN MODAL WITH CLOSE BUTTON -->
+    <!-- ADMIN LOGIN MODAL -->
     <div class="modal-overlay admin-login-overlay" id="adminLoginOverlay">
         <div class="modal admin-modal">
             <button class="modal-close-btn" onclick="hideAdminLogin()">✕</button>
@@ -1919,7 +1966,7 @@
         </div>
     </div>
 
-    <!-- ADMIN PANEL MODAL WITH CLOSE BUTTON -->
+    <!-- ADMIN PANEL MODAL -->
     <div class="modal-overlay admin-panel-overlay" id="adminPanelOverlay">
         <div class="modal admin-modal">
             <button class="modal-close-btn" onclick="hideAdminPanel()">✕</button>
@@ -1943,7 +1990,6 @@
                 </div>
             </div>
             
-            <!-- NEW: Remove Single Player Section -->
             <div class="admin-remove-section">
                 <div class="admin-remove-title">
                     👤 Remove Single Player
@@ -1953,14 +1999,14 @@
                     <button class="admin-remove-btn" onclick="initiateRemovePlayer()">🗑️ Remove</button>
                 </div>
                 <div class="admin-remove-hint">
-                    ⚠️ This will permanently delete the player's entire leaderboard entry including name, score, and date.
+                    ⚠️ This will permanently delete the player's entire leaderboard entry.
                 </div>
             </div>
             
             <button class="admin-btn admin-btn-danger" onclick="resetLeaderboard()">⚠️ Reset Entire Leaderboard</button>
             
             <p style="margin-top: 12px; font-size: 11px; color: var(--text-muted);">
-                This will permanently delete ALL leaderboard entries. Users will keep their accounts but scores will be reset to 0.
+                This will permanently delete ALL leaderboard entries.
             </p>
             
             <button class="admin-btn admin-btn-secondary" onclick="logoutAdmin()">👋 Logout Admin</button>
@@ -1979,6 +2025,21 @@
             <div class="conf-buttons">
                 <button class="conf-btn conf-btn-update" style="background: var(--orange);" onclick="confirmRemovePlayer()">🗑️ Confirm Removal</button>
                 <button class="conf-btn conf-btn-cancel" onclick="hideRemovePlayerModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- RESET LEADERBOARD CONFIRMATION MODAL -->
+    <div class="modal-overlay reset-confirm-overlay" id="resetConfirmOverlay">
+        <div class="modal confirm-modal" style="border-color: rgba(255, 59, 92, 0.4);">
+            <button class="modal-close-btn" onclick="hideResetConfirm()">✕</button>
+            <div class="conf-icon">⚠️</div>
+            <div class="conf-title" style="color: var(--danger);">RESET ENTIRE LEADERBOARD?</div>
+            <div class="conf-msg">This will PERMANENTLY DELETE ALL entries including names, scores, and dates! This action CANNOT be undone!</div>
+            
+            <div class="conf-buttons" style="margin-top: 24px;">
+                <button class="conf-btn conf-btn-update" style="background: var(--danger);" onclick="executeFullReset()">🗑️ YES, DELETE EVERYTHING</button>
+                <button class="conf-btn conf-btn-cancel" onclick="hideResetConfirm()">Cancel</button>
             </div>
         </div>
     </div>
@@ -2007,7 +2068,7 @@
         let isAdminLoggedIn = false;
         let pendingRemovePlayerName = null;
 
-        // ADMIN CREDENTIALS (Hardcoded)
+        // ADMIN CREDENTIALS
         const ADMIN_USERS = [
             { username: '9lana', password: '2007' },
             { username: 'zirj', password: '2008' },
@@ -2022,27 +2083,37 @@
         function hashPassword(password) { return btoa(password); }
         function verifyPassword(inputPassword, storedHashedPassword) { return hashPassword(inputPassword) === storedHashedPassword; }
 
-        // SECRET ADMIN TRIGGER - Triple-click DFR logo
+        // SECRET ADMIN TRIGGER
         document.getElementById('secretAdminTrigger').addEventListener('click', function() {
             logoClickCount++;
-            
             if (logoClickTimer) clearTimeout(logoClickTimer);
-            
             logoClickTimer = setTimeout(() => { logoClickCount = 0; }, 500);
             
             if (logoClickCount >= 3) {
                 logoClickCount = 0;
                 if (logoClickTimer) clearTimeout(logoClickTimer);
-                
                 console.log('🔑 Secret admin access triggered!');
-                
-                if (!isAdminLoggedIn) {
-                    showAdminLogin();
-                } else {
-                    showAdminPanel();
-                }
+                if (!isAdminLoggedIn) showAdminLogin();
+                else showAdminPanel();
             }
         });
+
+        // UNIVERSAL MODAL HELPERS
+        function showModal(modalId) {
+            const overlay = document.getElementById(modalId);
+            if (overlay) {
+                overlay.style.display = 'flex';
+                overlay.classList.add('active');
+            }
+        }
+        
+        function hideModal(modalId) {
+            const overlay = document.getElementById(modalId);
+            if (overlay) {
+                overlay.style.display = 'none';
+                overlay.classList.remove('active');
+            }
+        }
 
         // ADMIN LOGIN SYSTEM
         function showAdminLogin() {
@@ -2081,6 +2152,7 @@
             isAdminLoggedIn = false;
             hideAdminPanel();
             updateUserStatusUI(currentUser ? true : false);
+            updateAdminUI();
             showSuccess('👋 Admin logged out successfully.');
         }
 
@@ -2103,38 +2175,85 @@
                 }
             } catch (error) {
                 console.error("Error loading stats:", error);
-                document.getElementById('totalUsersCount').textContent = 'Error';
-                document.getElementById('totalEntriesCount').textContent = 'Error';
-                document.getElementById('highestScoreValue').textContent = 'Error';
             }
         }
 
         // ════════════════════════════════════════════════════════
-        // UPDATED: RESET LEADERBOARD - COMPLETE WIPE
+        // 🔥 COMPLETE LEADERBOARD RESET - ACTUALLY WORKS NOW!
         // ════════════════════════════════════════════════════════
+        
+        function showResetConfirm() {
+            if (!isAdminLoggedIn) { showError('❌ Admin access required!'); return; }
+            showModal('resetConfirmOverlay');
+        }
+        
+        function hideResetConfirm() { hideModal('resetConfirmOverlay'); }
+
+        async function executeFullReset() {
+            if (!isAdminLoggedIn) { showError('❌ Admin access required!'); return; }
+            
+            try {
+                console.log('🗑️ Starting complete leaderboard wipe...');
+                
+                // Step 1: Get reference to leaderboard
+                const lbRef = database.ref('leaderboard');
+                
+                // Step 2: Check if data exists
+                const snapshot = await lbRef.once('value');
+                
+                if (snapshot.exists()) {
+                    const count = Object.keys(snapshot.val()).length;
+                    console.log(`Found ${count} entries to delete...`);
+                    
+                    // Step 3: COMPLETELY REMOVE ALL DATA
+                    await lbRef.remove();
+                    
+                    console.log('✅ All entries deleted!');
+                    
+                    hideResetConfirm();
+                    hideAdminPanel();
+                    
+                    showSuccess(`🗑️ <strong>LEADERBOARD COMPLETELY WIPED!</strong><br><br>✅ Deleted ${count} entries<br>✅ All names removed<br>✅ All scores removed<br>✅ All dates removed<br><br>The leaderboard is now empty.`);
+                    
+                    // Refresh the display
+                    loadLeaderboard();
+                    
+                } else {
+                    console.log('ℹ️ No entries found to delete');
+                    hideResetConfirm();
+                    showSuccess('ℹ️ Leaderboard is already empty!');
+                }
+                
+            } catch (error) {
+                console.error("❌ Error resetting leaderboard:", error);
+                showError(`❌ Failed to reset leaderboard.<br><br>Error: ${error.message}`);
+            }
+        }
+
+        // Also keep old function for admin panel button
         async function resetLeaderboard() {
             if (!isAdminLoggedIn) { showError('❌ Admin access required!'); return; }
             
-            // Enhanced confirmation with clear warning
-            if (!confirm('⚠️ WARNING: This will PERMANENTLY DELETE ALL leaderboard entries!\n\nAll names, scores, dates, and data will be completely wiped.\n\nThis action CANNOT be undone!')) return;
-            if (!confirm('🚨 FINAL CONFIRMATION:\n\nAre you absolutely sure?\n\nThis will leave the leaderboard completely empty.')) return;
+            if (!confirm('⚠️ WARNING: This will PERMANENTLY DELETE ALL leaderboard entries!\n\nAll names, scores, dates will be wiped.\n\nThis CANNOT be undone!')) return;
+            if (!confirm('🚨 FINAL: Are you absolutely sure?')) return;
 
-            try {
-                // COMPLETELY REMOVE all entries instead of just zeroing them
-                await database.ref('leaderboard').remove();
-                
-                hideAdminPanel();
-                showSuccess('🗑️ <strong>Leaderboard Completely Wiped!</strong><br><br>All entries have been permanently deleted.<br>The leaderboard is now clean and empty.');
-                loadLeaderboard();
-            } catch (error) {
-                console.error("Error resetting leaderboard:", error);
-                showError('❌ Failed to reset leaderboard.<br>Please try again.');
-            }
+            await executeFullReset();
         }
 
         // ════════════════════════════════════════════════════════
-        // NEW: REMOVE SINGLE PLAYER FUNCTIONALITY
+        // 🗑️ REMOVE SINGLE PLAYER FROM LEADERBOARD TABLE
         // ════════════════════════════════════════════════════════
+        
+        window.initiateRemoveFromTable = function(playerKey, playerName) {
+            if (!isAdminLoggedIn) { 
+                showError('❌ Admin access required!'); 
+                return; 
+            }
+            
+            pendingRemovePlayerName = { key: playerKey, name: playerName };
+            document.getElementById('removePlayerNameDisplay').textContent = playerName;
+            showModal('removePlayerOverlay');
+        };
         
         function initiateRemovePlayer() {
             if (!isAdminLoggedIn) { 
@@ -2154,7 +2273,7 @@
                 return;
             }
             
-            pendingRemovePlayerName = playerName;
+            pendingRemovePlayerName = { key: null, name: playerName };
             document.getElementById('removePlayerNameDisplay').textContent = playerName;
             showModal('removePlayerOverlay');
         }
@@ -2171,37 +2290,44 @@
                 return;
             }
             
-            const playerNameToRemove = pendingRemovePlayerName;
+            const { key: playerKey, name: playerNameToRemove } = pendingRemovePlayerName;
             
             try {
-                // Find the player in the leaderboard
-                const snapshot = await database.ref('leaderboard')
-                    .orderByChild('name')
-                    .equalTo(playerNameToRemove)
-                    .once('value');
+                let actualKey = playerKey;
                 
-                if (!snapshot.exists()) {
-                    hideRemovePlayerModal();
-                    showError(`❌ Player "<strong>${escapeHtml(playerNameToRemove)}</strong>" not found in leaderboard!`);
-                    return;
+                // If we don't have the key, search by name
+                if (!actualKey) {
+                    console.log(`Searching for player: ${playerNameToRemove}`);
+                    const snapshot = await database.ref('leaderboard')
+                        .orderByChild('name')
+                        .equalTo(playerNameToRemove)
+                        .once('value');
+                    
+                    if (!snapshot.exists()) {
+                        hideRemovePlayerModal();
+                        showError(`❌ Player "<strong>${escapeHtml(playerNameToRemove)}</strong>" not found!`);
+                        return;
+                    }
+                    
+                    const entries = snapshot.val();
+                    actualKey = Object.keys(entries)[0];
                 }
                 
-                // Get the player's key
-                const entries = snapshot.val();
-                const playerKey = Object.keys(entries)[0];
+                console.log(`Removing player: ${playerNameToRemove} (key: ${actualKey})`);
                 
-                // Completely remove the player's entry
-                await database.ref('leaderboard/' + playerKey).remove();
+                // Delete the player
+                await database.ref('leaderboard/' + actualKey).remove();
+                
+                console.log('✅ Player deleted successfully');
                 
                 hideRemovePlayerModal();
                 document.getElementById('removePlayerInput').value = '';
                 pendingRemovePlayerName = null;
                 
-                showSuccess(`🗑️ <strong>${escapeHtml(playerNameToRemove)}</strong> removed!<br><br>Their entire entry has been permanently deleted.`);
+                showSuccess(`🗑️ <strong>${escapeHtml(playerNameToRemove)}</strong> removed!<br><br>Their entry has been permanently deleted.`);
                 
-                // Refresh admin stats and leaderboard
-                loadAdminStatistics();
                 loadLeaderboard();
+                loadAdminStatistics();
                 
             } catch (error) {
                 console.error("Error removing player:", error);
@@ -2216,23 +2342,17 @@
             pendingRemovePlayerName = null;
         }
 
-        // ════════════════════════════════════════════════════════
-        // UNIVERSAL MODAL HELPERS - FIXED VERSION
-        // ════════════════════════════════════════════════════════
-        
-        function showModal(modalId) {
-            const overlay = document.getElementById(modalId);
-            if (overlay) {
-                overlay.style.display = 'flex';
-                overlay.classList.add('active');
-            }
-        }
-        
-        function hideModal(modalId) {
-            const overlay = document.getElementById(modalId);
-            if (overlay) {
-                overlay.style.display = 'none';
-                overlay.classList.remove('active');
+        // UPDATE UI FOR ADMIN STATUS
+        function updateAdminUI() {
+            const resetBtn = document.getElementById('resetLbBtn');
+            const actionHeader = document.getElementById('lbActionHeader');
+            
+            if (isAdminLoggedIn) {
+                resetBtn.style.display = 'block';
+                actionHeader.style.display = '';
+            } else {
+                resetBtn.style.display = 'none';
+                actionHeader.style.display = 'none';
             }
         }
 
@@ -2510,16 +2630,26 @@
 
         function hideConfirm() { hideModal('confirmOverlay'); }
 
-        // LOAD LEADERBOARD
+        // ════════════════════════════════════════════════════════
+        // 📊 LOAD LEADERBOARD WITH DELETE BUTTONS
+        // ════════════════════════════════════════════════════════
         function loadLeaderboard() {
             const tbody = document.getElementById('leaderboardBody');
-            tbody.innerHTML = '<tr class="loading-row"><td colspan="4">Loading...</td></tr>';
+            tbody.innerHTML = '<tr class="loading-row"><td colspan="5">Loading...</td></tr>';
+            
+            // Show/hide admin UI elements
+            updateAdminUI();
 
             database.ref('leaderboard').orderByChild('score').limitToLast(15).once('value').then(snapshot => {
                 const data = snapshot.val();
-                if (!data) { tbody.innerHTML = '<tr class="placeholder-row"><td colspan="4">No entries — be first! 🚀</td></tr>'; return; }
+                if (!data) { 
+                    tbody.innerHTML = '<tr class="placeholder-row"><td colspan="5">No entries — be first! 🚀</td></tr>'; 
+                    return; 
+                }
 
-                const entries = Object.values(data).sort((a, b) => b.score - a.score);
+                const entries = Object.entries(data).map(([key, value]) => ({ ...value, _key: key }));
+                entries.sort((a, b) => (b.score || 0) - (a.score || 0));
+                
                 tbody.innerHTML = '';
 
                 entries.forEach((entry, index) => {
@@ -2529,10 +2659,46 @@
                     else if (index === 1) { rankClass = 'silver'; rankDisplay = '🥈'; }
                     else if (index === 2) { rankClass = 'bronze'; rankDisplay = '🥉'; }
 
-                    tr.innerHTML = `<td class="lb-rank ${rankClass}">${rankDisplay}</td><td class="lb-name">${escapeHtml(entry.name)}</td><td class="lb-score">${entry.score.toFixed(3)}x</td><td class="lb-date">${entry.date}</td>`;
+                    // Create name cell with optional delete button
+                    const nameTd = document.createElement('td');
+                    nameTd.className = 'lb-name';
+                    nameTd.innerHTML = `<span>${escapeHtml(entry.name)}</span>`;
+                    
+                    // Add delete button if admin is logged in
+                    if (isAdminLoggedIn) {
+                        const deleteBtn = document.createElement('button');
+                        deleteBtn.className = 'lb-delete-btn';
+                        deleteBtn.innerHTML = '🗑️';
+                        deleteBtn.title = `Remove ${entry.name}`;
+                        deleteBtn.onclick = (e) => {
+                            e.stopPropagation();
+                            initiateRemoveFromTable(entry._key, entry.name);
+                        };
+                        nameTd.appendChild(deleteBtn);
+                    }
+                    
+                    tr.innerHTML = `
+                        <td class="lb-rank ${rankClass}">${rankDisplay}</td>
+                        <td></td>
+                        <td class="lb-score">${(entry.score || 0).toFixed(3)}x</td>
+                        <td class="lb-date">${entry.date || ''}</td>
+                        <td></td>
+                    `;
+                    
+                    // Replace the empty second td with our name cell
+                    tr.cells[1].replaceWith(nameTd);
+                    
+                    // Hide action column if not admin
+                    if (!isAdminLoggedIn) {
+                        tr.cells[4].style.display = 'none';
+                    }
+                    
                     tbody.appendChild(tr);
                 });
-            }).catch(error => { console.error("Error:", error); tbody.innerHTML = '<tr class="placeholder-row"><td colspan="4" style="color:var(--danger)">❌ Failed</td></tr>'; });
+            }).catch(error => { 
+                console.error("Error:", error); 
+                tbody.innerHTML = '<tr class="placeholder-row"><td colspan="5" style="color:var(--danger)">❌ Failed</td></tr>'; 
+            });
         }
 
         // HELPERS
@@ -2540,7 +2706,7 @@
         function clearHistory() { if (confirm('Clear history?')) { localStorage.removeItem('dmgHistory'); document.getElementById('historyList').innerHTML = '<div class="history-empty">No calculations yet</div>'; } }
         function resetPersonalBest() { if (confirm('Reset PB?')) { localStorage.removeItem('maxDmgValue'); document.getElementById('maxLabel').textContent = '0.000x'; } }
 
-        // MODALS - Using universal helpers
+        // MODALS
         function showError(msg) { document.getElementById('errorText').innerHTML = msg; showModal('errorOverlay'); }
         function hideError() { hideModal('errorOverlay'); }
         function handleOverlayClick(e) { if (e.target.classList.contains('modal-overlay')) { hideModal(e.target.id); } }
