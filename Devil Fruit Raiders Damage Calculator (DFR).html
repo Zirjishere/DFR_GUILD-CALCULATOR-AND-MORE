@@ -127,7 +127,7 @@
 
         .nav-title span { color: var(--accent); }
 
-        /* Navigation Links - ALWAYS VISIBLE */
+        /* Navigation Links */
         .nav-links {
             display: flex;
             align-items: center;
@@ -137,6 +137,10 @@
         }
 
         .nav-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
             padding: 7px 14px;
             border-radius: 8px;
             font-size: 13px;
@@ -150,9 +154,6 @@
             white-space: nowrap;
             min-height: 40px;
             min-width: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             -webkit-tap-highlight-color: transparent;
             touch-action: manipulation;
             flex-shrink: 0;
@@ -166,6 +167,13 @@
         .nav-link.active { 
             color: var(--accent); 
             background: var(--accent-dim); 
+        }
+
+        /* Nav Link Icon - Hidden on mobile by default */
+        .nav-link-icon {
+            font-size: 18px;
+            line-height: 1;
+            display: block;
         }
 
         .nav-badge {
@@ -998,7 +1006,7 @@
             }
         }
 
-        /* Mobile - Keep Horizontal Nav! */
+        /* Mobile - ICONS ONLY MODE */
         @media (max-width: 768px) {
             :root {
                 --nav-h: 56px;
@@ -1024,22 +1032,22 @@
                 font-size: 15px; 
             }
 
-            /* Keep nav links visible but make them compact */
-            .nav-links {
-                gap: 4px;
+            /* Hide text on mobile, show only icons */
+            .nav-link {
+                padding: 8px;
+                font-size: 0; /* Hide text but keep spacing */
+                min-height: 42px;
+                min-width: 42px;
+                gap: 0;
             }
 
-            .nav-link {
-                padding: 6px 10px;
-                font-size: 12px;
-                min-height: 36px;
-                min-width: 36px;
+            .nav-link-icon {
+                font-size: 20px !important; /* Bigger icons on mobile */
+                display: block !important;
             }
 
             .nav-badge {
-                font-size: 9px;
-                padding: 5px 8px;
-                margin-left: 4px;
+                display: none; /* Hide badge on mobile */
             }
 
             main {
@@ -1115,20 +1123,14 @@
                 font-size: 13px;
             }
 
-            .nav-links {
-                gap: 3px;
-            }
-
             .nav-link {
-                padding: 5px 8px;
-                font-size: 11px;
-                min-height: 34px;
-                min-width: 34px;
-                border-radius: 6px;
+                padding: 7px;
+                min-height: 38px;
+                min-width: 38px;
             }
 
-            .nav-badge {
-                display: none; /* Hide badge on very small screens */
+            .nav-link-icon {
+                font-size: 18px !important;
             }
 
             main {
@@ -1235,10 +1237,13 @@
             }
 
             .nav-link {
-                padding: 5px 6px;
-                font-size: 10px;
-                min-height: 32px;
-                min-width: 32px;
+                padding: 6px;
+                min-height: 36px;
+                min-width: 36px;
+            }
+
+            .nav-link-icon {
+                font-size: 17px !important;
             }
         }
 
@@ -1291,18 +1296,27 @@
 </head>
 <body>
 
-    <!-- NAVBAR - HORIZONTAL ON ALL DEVICES -->
+    <!-- NAVBAR -->
     <nav>
         <div class="nav-brand">
             <div class="nav-logo">DFR</div>
             <div class="nav-title"><span>DFR</span> Calculator</div>
         </div>
 
-        <!-- Navigation Links - Always Visible -->
+        <!-- Navigation Links with Icons -->
         <div class="nav-links">
-            <button class="nav-link active" id="nav-calc" onclick="showPage('calc')">DMG Calc</button>
-            <button class="nav-link" id="nav-builds" onclick="showPage('builds')">Builds</button>
-            <button class="nav-link" id="nav-guild" onclick="showPage('guild')">Guild LB</button>
+            <button class="nav-link active" id="nav-calc" onclick="showPage('calc')">
+                <span class="nav-link-icon">⚔️</span>
+                <span>DMG Calc</span>
+            </button>
+            <button class="nav-link" id="nav-builds" onclick="showPage('builds')">
+                <span class="nav-link-icon">🗡️</span>
+                <span>Builds</span>
+            </button>
+            <button class="nav-link" id="nav-guild" onclick="showPage('guild')">
+                <span class="nav-link-icon">🏆</span>
+                <span>Guild LB</span>
+            </button>
             <span class="nav-badge">Devil Fruit Raiders</span>
         </div>
     </nav>
