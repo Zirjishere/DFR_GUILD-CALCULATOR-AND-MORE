@@ -34,7 +34,11 @@
             --radius: 10px;
         }
 
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        *, *::before, *::after { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
 
         html {
             scroll-behavior: smooth;
@@ -53,6 +57,7 @@
             position: relative;
         }
 
+        /* Background effects - MUST have pointer-events: none */
         body::before {
             content: '';
             position: fixed;
@@ -64,6 +69,7 @@
             pointer-events: none;
             z-index: 0;
         }
+        
         body::after {
             content: '';
             position: fixed;
@@ -79,7 +85,9 @@
         /* NAVBAR */
         nav {
             position: fixed;
-            top: 0; left: 0; right: 0;
+            top: 0; 
+            left: 0; 
+            right: 0;
             height: var(--nav-h);
             background: rgba(8, 12, 18, 0.95);
             backdrop-filter: blur(20px);
@@ -118,6 +126,8 @@
             cursor: pointer;
             transition: all 0.2s;
             user-select: none;
+            position: relative;
+            z-index: 1001;
         }
 
         .nav-logo:hover {
@@ -164,6 +174,8 @@
             -webkit-tap-highlight-color: transparent;
             touch-action: manipulation;
             flex-shrink: 0;
+            position: relative;
+            z-index: 1001;
         }
 
         .nav-link:hover { 
@@ -254,6 +266,8 @@
             display: none; 
             flex-direction: column;
             align-items: center;
+            position: relative;
+            z-index: 1;
         }
         
         .page.active { 
@@ -997,17 +1011,22 @@
 
         .refresh-lb-btn:active { transform: scale(0.97); }
 
-        /* ═══════════════ MODALS WITH CLOSE BUTTONS ═══════════════ */
+        /* ═══════════════ MODALS ═══════════════ */
         .modal-overlay {
-            position: fixed; inset: 0;
+            position: fixed; 
+            inset: 0;
             background: rgba(0,0,0,0.75);
             backdrop-filter: blur(6px);
             -webkit-backdrop-filter: blur(6px);
-            display: none;
+            display: none; /* HIDDEN BY DEFAULT */
             justify-content: center;
             align-items: center;
             z-index: 9999;
             padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex; /* ONLY SHOW WHEN ACTIVE CLASS IS ADDED */
         }
 
         .modal {
@@ -1022,7 +1041,7 @@
             position: relative;
         }
 
-        /* CLOSE BUTTON - UNIVERSAL STYLE */
+        /* CLOSE BUTTON */
         .modal-close-btn {
             position: absolute;
             top: 12px;
@@ -1303,6 +1322,17 @@
             box-shadow: 0 4px 12px rgba(255, 59, 92, 0.4);
         }
 
+        .admin-modal .admin-btn-warning {
+            background: linear-gradient(135deg, var(--orange), #cc5500);
+            color: #fff;
+            margin-top: 12px;
+        }
+
+        .admin-modal .admin-btn-warning:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
+        }
+
         .admin-modal .admin-btn-secondary {
             background: transparent;
             color: var(--text-secondary);
@@ -1342,6 +1372,82 @@
 
         .admin-info-value { color: var(--text); font-weight: 700; }
 
+        /* Player Remove Section */
+        .admin-remove-section {
+            margin-top: 20px;
+            padding: 16px;
+            background: rgba(255, 107, 53, 0.05);
+            border: 1px solid rgba(255, 107, 53, 0.2);
+            border-radius: 8px;
+        }
+
+        .admin-remove-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--orange);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            font-family: 'Space Mono', monospace;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .admin-remove-input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .admin-remove-input {
+            flex: 1;
+            height: 44px;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0 14px;
+            font-size: 14px;
+            font-family: 'Space Mono', monospace;
+            color: var(--text);
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .admin-remove-input:focus {
+            border-color: var(--orange);
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.15);
+        }
+
+        .admin-remove-input::placeholder { color: var(--text-muted); }
+
+        .admin-remove-btn {
+            padding: 0 20px;
+            background: linear-gradient(135deg, var(--orange), #cc5500);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-family: 'Syne', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+            min-height: 44px;
+        }
+
+        .admin-remove-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
+        }
+
+        .admin-remove-hint {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-family: 'Space Mono', monospace;
+            line-height: 1.5;
+        }
+
         /* RESPONSIVE */
         @media (max-width: 900px) {
             .content-grid, .builds-grid { grid-template-columns: 1fr; gap: 16px; }
@@ -1369,6 +1475,7 @@
             .live-text h3 { font-size: 15px; }
             .live-text p { font-size: 12px; }
             .confirm-modal .conf-buttons { flex-direction: column; }
+            .admin-remove-input-group { flex-direction: column; }
         }
 
         @media (max-width: 480px) {
@@ -1836,6 +1943,20 @@
                 </div>
             </div>
             
+            <!-- NEW: Remove Single Player Section -->
+            <div class="admin-remove-section">
+                <div class="admin-remove-title">
+                    👤 Remove Single Player
+                </div>
+                <div class="admin-remove-input-group">
+                    <input type="text" class="admin-remove-input" id="removePlayerInput" placeholder="Enter player name..." onkeypress="handleRemovePlayerKeypress(event)">
+                    <button class="admin-remove-btn" onclick="initiateRemovePlayer()">🗑️ Remove</button>
+                </div>
+                <div class="admin-remove-hint">
+                    ⚠️ This will permanently delete the player's entire leaderboard entry including name, score, and date.
+                </div>
+            </div>
+            
             <button class="admin-btn admin-btn-danger" onclick="resetLeaderboard()">⚠️ Reset Entire Leaderboard</button>
             
             <p style="margin-top: 12px; font-size: 11px; color: var(--text-muted);">
@@ -1843,6 +1964,22 @@
             </p>
             
             <button class="admin-btn admin-btn-secondary" onclick="logoutAdmin()">👋 Logout Admin</button>
+        </div>
+    </div>
+
+    <!-- REMOVE PLAYER CONFIRMATION MODAL -->
+    <div class="modal-overlay remove-player-overlay" id="removePlayerOverlay">
+        <div class="modal confirm-modal" style="border-color: rgba(255, 107, 53, 0.4);">
+            <button class="modal-close-btn" onclick="hideRemovePlayerModal()">✕</button>
+            <div class="conf-icon">🗑️</div>
+            <div class="conf-title" style="color: var(--orange);">Remove Player?</div>
+            <div class="conf-msg">This action cannot be undone! The player's complete entry will be deleted.</div>
+            <div class="conf-player" id="removePlayerNameDisplay" style="color: var(--orange);"></div>
+            
+            <div class="conf-buttons">
+                <button class="conf-btn conf-btn-update" style="background: var(--orange);" onclick="confirmRemovePlayer()">🗑️ Confirm Removal</button>
+                <button class="conf-btn conf-btn-cancel" onclick="hideRemovePlayerModal()">Cancel</button>
+            </div>
         </div>
     </div>
 
@@ -1868,6 +2005,7 @@
         let currentUser = null;
         let lastCalculatedResult = null;
         let isAdminLoggedIn = false;
+        let pendingRemovePlayerName = null;
 
         // ADMIN CREDENTIALS (Hardcoded)
         const ADMIN_USERS = [
@@ -1908,11 +2046,11 @@
 
         // ADMIN LOGIN SYSTEM
         function showAdminLogin() {
-            document.getElementById('adminLoginOverlay').style.display = 'flex';
+            showModal('adminLoginOverlay');
             setTimeout(() => document.getElementById('adminUsername').focus(), 100);
         }
 
-        function hideAdminLogin() { document.getElementById('adminLoginOverlay').style.display = 'none'; }
+        function hideAdminLogin() { hideModal('adminLoginOverlay'); }
 
         function handleAdminLogin() {
             const username = document.getElementById('adminUsername').value.trim();
@@ -1933,11 +2071,11 @@
         function showAdminPanel() {
             if (!isAdminLoggedIn) { showError('❌ Admin access required!'); return; }
             document.getElementById('adminNameDisplay').textContent = 'Admin';
-            document.getElementById('adminPanelOverlay').style.display = 'flex';
+            showModal('adminPanelOverlay');
             loadAdminStatistics();
         }
 
-        function hideAdminPanel() { document.getElementById('adminPanelOverlay').style.display = 'none'; }
+        function hideAdminPanel() { hideModal('adminPanelOverlay'); }
 
         function logoutAdmin() {
             isAdminLoggedIn = false;
@@ -1971,33 +2109,131 @@
             }
         }
 
+        // ════════════════════════════════════════════════════════
+        // UPDATED: RESET LEADERBOARD - COMPLETE WIPE
+        // ════════════════════════════════════════════════════════
         async function resetLeaderboard() {
             if (!isAdminLoggedIn) { showError('❌ Admin access required!'); return; }
-            if (!confirm('⚠️ Are you sure? This will reset ALL scores to 0!')) return;
-            if (!confirm('🚨 FINAL: Permanently delete all leaderboard scores?')) return;
+            
+            // Enhanced confirmation with clear warning
+            if (!confirm('⚠️ WARNING: This will PERMANENTLY DELETE ALL leaderboard entries!\n\nAll names, scores, dates, and data will be completely wiped.\n\nThis action CANNOT be undone!')) return;
+            if (!confirm('🚨 FINAL CONFIRMATION:\n\nAre you absolutely sure?\n\nThis will leave the leaderboard completely empty.')) return;
 
             try {
-                const lbSnapshot = await database.ref('leaderboard').once('value');
-                if (lbSnapshot.exists()) {
-                    const entries = lbSnapshot.val();
-                    const updates = {};
-                    
-                    Object.keys(entries).forEach(key => {
-                        updates[`/leaderboard/${key}/score`] = 0;
-                        updates[`/leaderboard/${key}/percentDamage`] = 0;
-                        updates[`/leaderboard/${key}/critChance`] = 0;
-                        updates[`/leaderboard/${key}/critDamage`] = 0;
-                        updates[`/leaderboard/${key}/timestamp`] = Date.now();
-                        updates[`/leaderboard/${key}/date`] = new Date().toLocaleDateString();
-                        updates[`/leaderboard/${key}/time`] = new Date().toLocaleTimeString();
-                    });
+                // COMPLETELY REMOVE all entries instead of just zeroing them
+                await database.ref('leaderboard').remove();
+                
+                hideAdminPanel();
+                showSuccess('🗑️ <strong>Leaderboard Completely Wiped!</strong><br><br>All entries have been permanently deleted.<br>The leaderboard is now clean and empty.');
+                loadLeaderboard();
+            } catch (error) {
+                console.error("Error resetting leaderboard:", error);
+                showError('❌ Failed to reset leaderboard.<br>Please try again.');
+            }
+        }
 
-                    await database.ref().update(updates);
-                    hideAdminPanel();
-                    showSuccess('🗑️ <strong>Leaderboard Reset Complete!</strong><br>All scores cleared.');
-                    loadLeaderboard();
+        // ════════════════════════════════════════════════════════
+        // NEW: REMOVE SINGLE PLAYER FUNCTIONALITY
+        // ════════════════════════════════════════════════════════
+        
+        function initiateRemovePlayer() {
+            if (!isAdminLoggedIn) { 
+                showError('❌ Admin access required!'); 
+                return; 
+            }
+            
+            const playerName = document.getElementById('removePlayerInput').value.trim();
+            
+            if (!playerName) {
+                showError('❌ Please enter a player name!');
+                return;
+            }
+            
+            if (playerName.length < 2) {
+                showError('❌ Name must be at least 2 characters!');
+                return;
+            }
+            
+            pendingRemovePlayerName = playerName;
+            document.getElementById('removePlayerNameDisplay').textContent = playerName;
+            showModal('removePlayerOverlay');
+        }
+        
+        function handleRemovePlayerKeypress(event) {
+            if (event.key === 'Enter') {
+                initiateRemovePlayer();
+            }
+        }
+        
+        async function confirmRemovePlayer() {
+            if (!isAdminLoggedIn || !pendingRemovePlayerName) {
+                hideRemovePlayerModal();
+                return;
+            }
+            
+            const playerNameToRemove = pendingRemovePlayerName;
+            
+            try {
+                // Find the player in the leaderboard
+                const snapshot = await database.ref('leaderboard')
+                    .orderByChild('name')
+                    .equalTo(playerNameToRemove)
+                    .once('value');
+                
+                if (!snapshot.exists()) {
+                    hideRemovePlayerModal();
+                    showError(`❌ Player "<strong>${escapeHtml(playerNameToRemove)}</strong>" not found in leaderboard!`);
+                    return;
                 }
-            } catch (error) { showError('Failed to reset.'); }
+                
+                // Get the player's key
+                const entries = snapshot.val();
+                const playerKey = Object.keys(entries)[0];
+                
+                // Completely remove the player's entry
+                await database.ref('leaderboard/' + playerKey).remove();
+                
+                hideRemovePlayerModal();
+                document.getElementById('removePlayerInput').value = '';
+                pendingRemovePlayerName = null;
+                
+                showSuccess(`🗑️ <strong>${escapeHtml(playerNameToRemove)}</strong> removed!<br><br>Their entire entry has been permanently deleted.`);
+                
+                // Refresh admin stats and leaderboard
+                loadAdminStatistics();
+                loadLeaderboard();
+                
+            } catch (error) {
+                console.error("Error removing player:", error);
+                hideRemovePlayerModal();
+                showError('❌ Failed to remove player.<br>Please try again.');
+                pendingRemovePlayerName = null;
+            }
+        }
+        
+        function hideRemovePlayerModal() {
+            hideModal('removePlayerOverlay');
+            pendingRemovePlayerName = null;
+        }
+
+        // ════════════════════════════════════════════════════════
+        // UNIVERSAL MODAL HELPERS - FIXED VERSION
+        // ════════════════════════════════════════════════════════
+        
+        function showModal(modalId) {
+            const overlay = document.getElementById(modalId);
+            if (overlay) {
+                overlay.style.display = 'flex';
+                overlay.classList.add('active');
+            }
+        }
+        
+        function hideModal(modalId) {
+            const overlay = document.getElementById(modalId);
+            if (overlay) {
+                overlay.style.display = 'none';
+                overlay.classList.remove('active');
+            }
         }
 
         // SESSION MANAGEMENT
@@ -2096,7 +2332,6 @@
 
         // AUTH MODAL
         function showAuthModal(mode) {
-            const overlay = document.getElementById('authOverlay');
             const modalContent = document.getElementById('authModalContent');
             
             if (mode === 'login') {
@@ -2124,11 +2359,11 @@
                 `;
             }
             
-            overlay.style.display = 'flex';
+            showModal('authOverlay');
             setTimeout(() => { const firstInput = modalContent.querySelector('input'); if (firstInput) firstInput.focus(); }, 100);
         }
 
-        function hideAuthModal() { document.getElementById('authOverlay').style.display = 'none'; }
+        function hideAuthModal() { hideModal('authOverlay'); }
 
         // HANDLE REGISTRATION
         function handleRegister() {
@@ -2256,7 +2491,7 @@
                 document.getElementById('confirmCancelBtn').textContent = 'Cancel';
             }
 
-            document.getElementById('confirmOverlay').style.display = 'flex';
+            showModal('confirmOverlay');
         }
 
         // CONFIRM UPDATE
@@ -2273,7 +2508,7 @@
             }).catch(error => { console.error("Error:", error); hideConfirm(); showError("Failed."); pendingUpdateData = null; });
         }
 
-        function hideConfirm() { document.getElementById('confirmOverlay').style.display = 'none'; }
+        function hideConfirm() { hideModal('confirmOverlay'); }
 
         // LOAD LEADERBOARD
         function loadLeaderboard() {
@@ -2305,22 +2540,22 @@
         function clearHistory() { if (confirm('Clear history?')) { localStorage.removeItem('dmgHistory'); document.getElementById('historyList').innerHTML = '<div class="history-empty">No calculations yet</div>'; } }
         function resetPersonalBest() { if (confirm('Reset PB?')) { localStorage.removeItem('maxDmgValue'); document.getElementById('maxLabel').textContent = '0.000x'; } }
 
-        // MODALS
-        function showError(msg) { document.getElementById('errorText').innerHTML = msg; document.getElementById('errorOverlay').style.display = 'flex'; }
-        function hideError() { document.getElementById('errorOverlay').style.display = 'none'; }
-        function handleOverlayClick(e) { if (e.target.id.endsWith('Overlay')) { e.target.style.display = 'none'; } }
-        function showSuccess(msg) { document.getElementById('successText').innerHTML = msg; document.getElementById('successOverlay').style.display = 'flex'; setTimeout(() => hideSuccess(), 5000); }
-        function hideSuccess() { document.getElementById('successOverlay').style.display = 'none'; }
+        // MODALS - Using universal helpers
+        function showError(msg) { document.getElementById('errorText').innerHTML = msg; showModal('errorOverlay'); }
+        function hideError() { hideModal('errorOverlay'); }
+        function handleOverlayClick(e) { if (e.target.classList.contains('modal-overlay')) { hideModal(e.target.id); } }
+        function showSuccess(msg) { document.getElementById('successText').innerHTML = msg; showModal('successOverlay'); setTimeout(() => hideSuccess(), 5000); }
+        function hideSuccess() { hideModal('successOverlay'); }
 
         // EVENTS
         document.addEventListener('keypress', e => { if (e.key === 'Enter') calculate(); });
         document.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
-                if (document.getElementById('authOverlay').style.display === 'flex') {
+                if (document.getElementById('authOverlay').classList.contains('active')) {
                     if (document.getElementById('loginPassword')) handleLogin();
                     else if (document.getElementById('registerConfirmPassword')) handleRegister();
                 }
-                if (document.getElementById('adminLoginOverlay').style.display === 'flex') handleAdminLogin();
+                if (document.getElementById('adminLoginOverlay').classList.contains('active')) handleAdminLogin();
             }
         });
 
@@ -2330,7 +2565,13 @@
         document.querySelectorAll('input').forEach(inp => { inp.addEventListener('focus', function() { this.scrollIntoView({ behavior: 'smooth', block: 'center' }); }); });
 
         // INITIALIZATION
-        window.addEventListener('DOMContentLoaded', () => { loadMaxValue(); loadHistory(); checkExistingSession(); });
+        window.addEventListener('DOMContentLoaded', () => { 
+            console.log('🚀 DFR Calculator initializing...');
+            loadMaxValue(); 
+            loadHistory(); 
+            checkExistingSession();
+            console.log('✅ DFR Calculator ready!');
+        });
     </script>
 </body>
 </html>
