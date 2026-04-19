@@ -1634,13 +1634,13 @@
             </button>
             <span class="nav-badge">Devil Fruit Raiders</span>
             
-            <!-- FIX #1: Login/Signup Button (Visible when not logged in) -->
+            <!-- Login/Signup Button -->
             <button class="auth-btn-nav" id="authBtnNav" onclick="showAuthModal('login')">
                 <span class="nav-link-icon">👤</span>
                 <span>Login / Sign Up</span>
             </button>
             
-            <!-- User Status Container with Logout -->
+            <!-- User Status Container -->
             <div class="user-status-container" id="userStatusContainer" style="display: none;">
                 <div class="user-status" id="userStatus">
                     <span class="user-status-dot"></span>
@@ -2162,9 +2162,8 @@
             }
         }
 
-        // FIX #2: BLOCK USER LOGIN IF ADMIN IS LOGGED IN
+        // BLOCK USER LOGIN IF ADMIN IS LOGGED IN
         function showAuthModal(mode) {
-            // Prevent user login if admin is logged in
             if (isAdminLoggedIn) {
                 showError('❌ <strong>Admin session active!</strong><br><br>Please logout from Admin panel first before logging in as a regular user.');
                 return;
@@ -2436,11 +2435,10 @@
             }
         }
 
-        // FIX #3: UPDATED UI FUNCTIONS FOR LOGIN BUTTON
+        // UPDATED UI FUNCTIONS FOR LOGIN BUTTON
         function updateAuthButtonUI() {
             const authBtnNav = document.getElementById('authBtnNav');
             
-            // Show login button ONLY when no user AND no admin is logged in
             if (!currentUser && !isAdminLoggedIn) {
                 authBtnNav.style.display = 'flex';
             } else {
@@ -2461,7 +2459,6 @@
                     logoutUser(); 
                 }
             } else {
-                // Ensure login button is visible on load
                 updateAuthButtonUI();
             }
         }
@@ -2470,14 +2467,14 @@
             currentUser = userData; 
             localStorage.setItem('dfr_user_session', JSON.stringify(userData)); 
             updateUserStatusUI(true); 
-            updateAuthButtonUI(); // Hide login button after successful login
+            updateAuthButtonUI();
         }
         
         function logoutUser() { 
             currentUser = null; 
             localStorage.removeItem('dfr_user_session'); 
             updateUserStatusUI(false); 
-            updateAuthButtonUI(); // Show login button after logout
+            updateAuthButtonUI();
         }
 
         function updateUserStatusUI(isLoggedIn) {
@@ -2570,7 +2567,6 @@
         function initiateSaveToLB() {
             if (!lastCalculatedResult) { showError('Calculate first!'); return; }
             
-            // Check if admin is logged in
             if (isAdminLoggedIn) {
                 showError('❌ <strong>Cannot submit scores as Admin!</strong><br><br>Please logout from Admin panel and login as a regular user to submit scores.');
                 return;
@@ -2586,7 +2582,6 @@
 
         // HANDLE REGISTRATION
         function handleRegister() {
-            // Double-check admin status
             if (isAdminLoggedIn) {
                 showError('❌ Cannot register while Admin is logged in!');
                 return;
@@ -2621,9 +2616,8 @@
             }).catch(error => { console.error("Error:", error); showError("Failed."); });
         }
 
-        // HANDLE LOGIN
+        // HANDLE LOGIN - FIXED VERSION
         function handleLogin() {
-            // Double-check admin status
             if (isAdminLoggedIn) {
                 showError('❌ Cannot login as user while Admin session is active!');
                 return;
@@ -2645,28 +2639,158 @@
 
                 database.ref('users/' + userKey).update({ lastLogin: Date.now() });
 
+                // 🔥 FIX: Check if leaderboard entry exists, create if not
                 database.ref('leaderboard').orderByChild('userId').equalTo(userKey).once('value').then(lbSnapshot => {
                     let lbKey = null;
-                    if (lbSnapshot.exists()) { lbKey = Object.keys(lbSnapshot.val())[0]; }
-                    saveSession({ name: name, key: userKey, lbKey: lbKey, password: hashPassword(password) });
-                    hideAuthModal();
-                    showSuccess(`Welcome back, ${escapeHtml(name)}!`);
-                    setTimeout(() => { if (lastCalculatedResult) checkAndPrepareSubmission(name, lastCalculatedResult); }, 1500);
+                    
+                    if (lbSnapshot.exists()) {
+                        lbKey = Object.keys(lbSnapshot.val())[0];
+                    } else {
+                        // 🔥 CREATE MISSING LEADERBOARD ENTRY
+                        console.log('⚠️ No leaderboard entry found for user, creating one...');
+                        
+                        const newLbEntry = { 
+                            userId: userKey, 
+                            name: name, 
+                            score: 0, 
+                            percentDamage: 0, 
+                            critChance: 0, 
+                            critDamage: 0, 
+                            timestamp: Date.now(), 
+                            date: new Date().toLocaleDateString(), 
+                            time: new Date().toLocaleTimeString() 
+                        };
+                        
+                        return database.ref('leaderboard').push(newLbEntry).then(newLbRef => {
+                            console.log('✅ Created new leaderboard entry:', newLbRef.key);
+                            lbKey = newLbRef.key;
+                            
+                            saveSession({ name: name, key: userKey, lbKey: lbKey, password: hashPassword(password) });
+                            hideAuthModal();
+                            showSuccess(`Welcome back, ${escapeHtml(name)}!<br><br>🔧 Fixed: Created missing leaderboard entry.`);
+                            
+                            setTimeout(() => { 
+                                if (lastCalculatedResult) checkAndPrepareSubmission(name, lastCalculatedResult); 
+                            }, 1500);
+                        });
+                    }
+                    
+                    // Normal case: leaderboard entry exists
+                    if (lbKey) {
+                        saveSession({ name: name, key: userKey, lbKey: lbKey, password: hashPassword(password) });
+                        hideAuthModal();
+                        showSuccess(`Welcome back, ${escapeHtml(name)}!`);
+                        
+                        setTimeout(() => { 
+                            if (lastCalculatedResult) checkAndPrepareSubmission(name, lastCalculatedResult); 
+                        }, 1500);
+                    }
                 });
             }).catch(error => { console.error("Error:", error); showError("Failed."); });
         }
 
-        // CHECK AND PREPARE SUBMISSION
+        // CHECK AND PREPARE SUBMISSION - WITH AUTO-FIX
         function checkAndPrepareSubmission(userName, calcData) {
-            if (!currentUser || !currentUser.lbKey) { 
-                showError('❌ LB entry not found. Try logging out and back in.'); 
+            if (!currentUser) { 
+                showError('❌ Not logged in. Please login again.'); 
                 return; 
             }
 
+            // 🔥 FIX: If no lbKey, try to find or create it
+            if (!currentUser.lbKey) {
+                console.log('⚠️ Missing lbKey, attempting to fix...');
+                
+                // Show loading state
+                showError('⏳ Fixing account setup...<br>Please wait...');
+                
+                // Try to find existing leaderboard entry
+                database.ref('leaderboard').orderByChild('userId').equalTo(currentUser.key).once('value').then(lbSnapshot => {
+                    if (lbSnapshot.exists()) {
+                        // Found it! Update session
+                        const lbKey = Object.keys(lbSnapshot.val())[0];
+                        currentUser.lbKey = lbKey;
+                        saveSession(currentUser);
+                        
+                        hideError();
+                        console.log('✅ Found and restored lbKey:', lbKey);
+                        
+                        // Now proceed normally
+                        proceedWithSubmission(userName, calcData);
+                    } else {
+                        // Not found, create new entry
+                        console.log('Creating new leaderboard entry...');
+                        
+                        const newLbEntry = { 
+                            userId: currentUser.key, 
+                            name: userName, 
+                            score: 0, 
+                            percentDamage: 0, 
+                            critChance: 0, 
+                            critDamage: 0, 
+                            timestamp: Date.now(), 
+                            date: new Date().toLocaleDateString(), 
+                            time: new Date().toLocaleTimeString() 
+                        };
+                        
+                        database.ref('leaderboard').push(newLbEntry).then(newLbRef => {
+                            currentUser.lbKey = newLbRef.key;
+                            saveSession(currentUser);
+                            
+                            hideError();
+                            showSuccess(`✅ Account fixed!<br>Your leaderboard entry has been created.`);
+                            
+                            console.log('✅ Created new lbKey:', newLbRef.key);
+                            
+                            // Now proceed
+                            setTimeout(() => {
+                                proceedWithSubmission(userName, calcData);
+                            }, 1000);
+                        }).catch(err => {
+                            console.error('Failed to create entry:', err);
+                            hideError();
+                            showError('❌ Failed to fix account. Please contact admin.');
+                        });
+                    }
+                }).catch(err => {
+                    console.error('Error fixing account:', err);
+                    hideError();
+                    showError('❌ Failed to fix account. Please try again.');
+                });
+                
+                return; // Exit early, will continue after async operations
+            }
+            
+            // Normal case: has lbKey
+            proceedWithSubmission(userName, calcData);
+        }
+
+        // NEW FUNCTION: Actually do the submission
+        function proceedWithSubmission(userName, calcData) {
             database.ref('leaderboard/' + currentUser.lbKey).once('value').then(snapshot => {
                 if (!snapshot.exists()) { 
-                    showError('❌ Entry not found! Your account may be corrupted. Contact admin.'); 
-                    return; 
+                    // Entry was deleted, need to recreate
+                    console.log('⚠️ Leaderboard entry deleted, recreating...');
+                    
+                    const newLbEntry = { 
+                        userId: currentUser.key, 
+                        name: userName, 
+                        score: 0, 
+                        percentDamage: 0, 
+                        critChance: 0, 
+                        critDamage: 0, 
+                        timestamp: Date.now(), 
+                        date: new Date().toLocaleDateString(), 
+                        time: new Date().toLocaleTimeString() 
+                    };
+                    
+                    database.ref('leaderboard').push(newLbEntry).then(newLbRef => {
+                        currentUser.lbKey = newLbRef.key;
+                        saveSession(currentUser);
+                        
+                        showSuccess(`✅ Account repaired!<br>Please try saving your score again.`);
+                    });
+                    
+                    return;
                 }
 
                 const currentScore = snapshot.val().score || 0;
@@ -2764,7 +2888,6 @@
                 showSuccess(`<strong>${escapeHtml(name)}</strong>'s score updated!<br>New: <strong>${newResult.toFixed(3)}x</strong>`);
                 pendingUpdateData = null;
                 
-                // Refresh leaderboard if on guild page
                 if (document.getElementById('page-guild').classList.contains('active')) {
                     loadLeaderboard();
                 }
@@ -2893,7 +3016,7 @@
             loadMaxValue(); 
             loadHistory(); 
             checkExistingSession();
-            updateAuthButtonUI(); // Ensure button state is correct on load
+            updateAuthButtonUI();
             console.log('✅ DFR Calculator ready!');
         });
     </script>
