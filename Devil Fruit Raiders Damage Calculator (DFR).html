@@ -189,6 +189,44 @@
             flex-shrink: 0;
         }
 
+        /* User Status in Nav */
+        .user-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            font-family: 'Space Mono', monospace;
+            background: var(--green-dim);
+            color: var(--green);
+            border: 1px solid rgba(0, 229, 160, 0.3);
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+            max-width: 180px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-status:hover {
+            background: rgba(0, 229, 160, 0.2);
+        }
+
+        .user-status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--green);
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+
         /* ═══════════════ PAGES ═══════════════ */
         .page { 
             display: none; 
@@ -479,6 +517,36 @@
 
         .calc-btn:hover::before { opacity: 1; }
         .calc-btn:active { transform: scale(0.97); }
+
+        /* Save to LB Button */
+        .save-lb-btn {
+            width: 100%;
+            height: 52px;
+            margin-top: 12px;
+            background: linear-gradient(135deg, var(--gold-dim), rgba(255, 215, 0, 0.05));
+            border: 1px solid rgba(255, 215, 0, 0.4);
+            border-radius: var(--radius);
+            font-family: 'Syne', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: var(--gold);
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+            min-height: 52px;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        .save-lb-btn:hover {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 215, 0, 0.08));
+            border-color: rgba(255, 215, 0, 0.6);
+            transform: translateY(-1px);
+        }
+
+        .save-lb-btn:active { transform: scale(0.97); }
 
         /* ═══════════════ HISTORY ═══════════════ */
         .history-scroll {
@@ -914,7 +982,9 @@
 
         /* ═══════════════ MODALS ═══════════════ */
         .error-overlay,
-        .success-overlay {
+        .success-overlay,
+        .confirm-overlay,
+        .auth-overlay {
             position: fixed; inset: 0;
             background: rgba(0,0,0,0.75);
             backdrop-filter: blur(6px);
@@ -927,11 +997,13 @@
         }
 
         .error-modal,
-        .success-modal {
+        .success-modal,
+        .confirm-modal,
+        .auth-modal {
             background: var(--surface);
             border-radius: 14px;
             padding: 28px 24px;
-            max-width: 340px;
+            max-width: 420px;
             width: 100%;
             text-align: center;
             animation: slideDown 0.25s ease;
@@ -944,6 +1016,14 @@
 
         .success-modal {
             border: 1px solid rgba(0, 229, 160, 0.4);
+        }
+
+        .confirm-modal {
+            border: 1px solid rgba(255, 215, 0, 0.4);
+        }
+
+        .auth-modal {
+            border: 1px solid rgba(0, 220, 255, 0.4);
         }
 
         .error-modal .err-icon { font-size: 28px; margin-bottom: 10px; }
@@ -982,8 +1062,208 @@
         }
 
         .error-modal .err-btn:active,
-        .success-modal .succ-btn:active {
+        .success-modal .succ-btn:active,
+        .confirm-modal .conf-btn:active,
+        .auth-modal .auth-btn:active {
             transform: scale(0.97);
+        }
+
+        /* Auth Modal Specific Styles */
+        .auth-modal .auth-icon { font-size: 36px; margin-bottom: 12px; }
+        .auth-modal .auth-title { font-size: 20px; font-weight: 800; color: var(--accent); margin-bottom: 8px; }
+        .auth-modal .auth-subtitle { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.6; }
+        
+        .auth-field {
+            margin-bottom: 16px;
+            text-align: left;
+        }
+
+        .auth-field label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .auth-field input {
+            width: 100%;
+            height: 46px;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0 14px;
+            font-size: 15px;
+            font-family: 'Space Mono', monospace;
+            color: var(--text);
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .auth-field input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(0, 220, 255, 0.15);
+        }
+
+        .auth-field input::placeholder { color: var(--text-muted); }
+
+        .auth-modal .auth-btn {
+            width: 100%;
+            margin-top: 8px;
+            padding: 14px;
+            border-radius: 8px;
+            border: none;
+            font-family: 'Syne', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-height: 52px;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        .auth-modal .auth-btn-primary {
+            background: linear-gradient(135deg, var(--accent), #0099cc);
+            color: #000;
+        }
+
+        .auth-modal .auth-btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 220, 255, 0.3);
+        }
+
+        .auth-modal .auth-btn-secondary {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            margin-top: 10px;
+        }
+
+        .auth-modal .auth-btn-secondary:hover {
+            background: var(--surface-2);
+            color: var(--text);
+        }
+
+        .auth-switch {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .auth-switch a {
+            color: var(--accent);
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .auth-switch a:hover {
+            text-decoration: underline;
+        }
+
+        /* Confirm Modal Specific Styles */
+        .confirm-modal .conf-icon { font-size: 36px; margin-bottom: 12px; }
+        .confirm-modal .conf-title { font-size: 18px; font-weight: 800; margin-bottom: 8px; }
+        .confirm-modal .conf-msg { font-size: 13px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 8px; }
+        .confirm-modal .conf-player { 
+            font-size: 16px; 
+            font-weight: 800; 
+            color: var(--accent); 
+            margin: 12px 0; 
+            padding: 10px;
+            background: var(--surface-2);
+            border-radius: 8px;
+            font-family: 'Space Mono', monospace;
+        }
+        .confirm-modal .conf-scores { 
+            display: flex; 
+            justify-content: center; 
+            gap: 20px; 
+            margin: 16px 0; 
+            flex-wrap: wrap;
+        }
+        .confirm-modal .conf-score-item { 
+            text-align: center;
+            padding: 12px 16px;
+            background: var(--surface-2);
+            border-radius: 8px;
+            flex: 1;
+            min-width: 120px;
+        }
+        .confirm-modal .conf-score-label { 
+            font-size: 10px; 
+            color: var(--text-muted); 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+            font-family: 'Space Mono', monospace;
+        }
+        .confirm-modal .conf-score-value { 
+            font-size: 20px; 
+            font-weight: 800;
+            font-family: 'Space Mono', monospace;
+        }
+        .confirm-modal .conf-score-value.old { color: var(--orange); }
+        .confirm-modal .conf-score-value.new { color: var(--green); }
+        
+        .confirm-modal .conf-improvement {
+            text-align: center;
+            margin: 12px 0;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .confirm-modal .conf-improvement.positive {
+            background: rgba(0, 229, 160, 0.1);
+            color: var(--green);
+            border: 1px solid rgba(0, 229, 160, 0.3);
+        }
+
+        .confirm-modal .conf-improvement.negative {
+            background: rgba(255, 107, 53, 0.1);
+            color: var(--orange);
+            border: 1px solid rgba(255, 107, 53, 0.3);
+        }
+        
+        .confirm-modal .conf-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .confirm-modal .conf-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            font-family: 'Syne', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-height: 48px;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        .confirm-modal .conf-btn-update {
+            background: var(--green);
+            color: #000;
+        }
+
+        .confirm-modal .conf-btn-cancel {
+            background: var(--surface-2);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
         }
 
         /* ═══════════════ RESPONSIVE DESIGN ═══════════════ */
@@ -1046,8 +1326,9 @@
                 display: block !important;
             }
 
-            .nav-badge {
-                display: none; /* Hide badge on mobile */
+            .nav-badge,
+            .user-status {
+                display: none; /* Hide badge and user status on mobile */
             }
 
             main {
@@ -1098,6 +1379,10 @@
 
             .live-text p {
                 font-size: 12px;
+            }
+
+            .confirm-modal .conf-buttons {
+                flex-direction: column;
             }
         }
 
@@ -1180,7 +1465,8 @@
                 padding: 12px 16px;
             }
 
-            .calc-btn {
+            .calc-btn,
+            .save-lb-btn {
                 height: 48px;
                 font-size: 14px;
             }
@@ -1224,9 +1510,20 @@
             }
 
             .error-modal,
-            .success-modal {
+            .success-modal,
+            .confirm-modal,
+            .auth-modal {
                 padding: 24px 20px;
                 margin: 16px;
+            }
+
+            .confirm-modal .conf-scores {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .confirm-modal .conf-score-item {
+                min-width: auto;
             }
         }
 
@@ -1318,6 +1615,11 @@
                 <span>Guild LB</span>
             </button>
             <span class="nav-badge">Devil Fruit Raiders</span>
+            <!-- User Status (shown when logged in) -->
+            <div class="user-status" id="userStatus" style="display: none;" onclick="showAuthModal('login')">
+                <span class="user-status-dot"></span>
+                <span id="userNameDisplay">Player</span>
+            </div>
         </div>
     </nav>
 
@@ -1369,7 +1671,12 @@
                     <div class="r-value" id="maxLabel">0.000x</div>
                 </div>
 
-                <button class="calc-btn" onclick="calculate()">Calculate Damage</button>
+                <button class="calc-btn" onclick="calculate()">⚡ Calculate Damage</button>
+                
+                <!-- Save to Leaderboard Button (appears after calculation) -->
+                <button class="save-lb-btn" id="saveLbBtn" style="display: none;" onclick="initiateSaveToLB()">
+                    🏆 Save to Guild Leaderboard
+                </button>
 
                 <div class="credit">
                     <span>created by zone, 9lana_enjoyer, Zirjishere</span>
@@ -1634,7 +1941,7 @@
         <div class="page-header">
             <div class="page-eyebrow">// rankings</div>
             <h1 class="page-title">Guild <span>Leaderboard</span></h1>
-            <p class="page-subtitle">Top players ranked by damage multiplier. Calculate to join!</p>
+            <p class="page-subtitle">Top 15 players ranked by damage multiplier. Login to compete!</p>
         </div>
 
         <div class="leaderboard-wrap">
@@ -1642,7 +1949,7 @@
                 <div class="live-icon">🏆</div>
                 <div class="live-text">
                     <h3>Live Leaderboard Active!</h3>
-                    <p>Your damage calculations are saved here. Compete with players worldwide!</p>
+                    <p>Login to submit your scores and compete with guild members worldwide!</p>
                 </div>
             </div>
 
@@ -1650,7 +1957,7 @@
                 <div class="card-header">
                     <div class="card-icon">🥇</div>
                     <div class="card-label">Global Rankings</div>
-                    <div class="card-badge">LIVE</div>
+                    <div class="card-badge">TOP 15</div>
                 </div>
                 
                 <div class="leaderboard-table-wrapper">
@@ -1698,6 +2005,38 @@
         </div>
     </div>
 
+    <!-- AUTH MODAL (Login/Register) -->
+    <div class="auth-overlay" id="authOverlay">
+        <div class="auth-modal" id="authModalContent">
+            <!-- Dynamic content based on mode (login/register) -->
+        </div>
+    </div>
+
+    <!-- CONFIRM UPDATE MODAL (Smart Comparison) -->
+    <div class="confirm-overlay" id="confirmOverlay">
+        <div class="confirm-modal">
+            <div class="conf-icon" id="confirmIcon">🔄</div>
+            <div class="conf-title" id="confirmTitle">Update Score?</div>
+            <div class="conf-msg" id="confirmMsg"></div>
+            <div class="conf-player" id="confirmPlayerName"></div>
+            <div class="conf-scores">
+                <div class="conf-score-item">
+                    <div class="conf-score-label" id="oldScoreLabel">Current Score</div>
+                    <div class="conf-score-value old" id="confirmOldScore"></div>
+                </div>
+                <div class="conf-score-item">
+                    <div class="conf-score-label" id="newScoreLabel">New Score</div>
+                    <div class="conf-score-value new" id="confirmNewScore"></div>
+                </div>
+            </div>
+            <div class="conf-improvement" id="confirmImprovement"></div>
+            <div class="conf-buttons">
+                <button class="conf-btn conf-btn-update" id="confirmUpdateBtn" onclick="confirmUpdate()">Confirm Update</button>
+                <button class="conf-btn conf-btn-cancel" id="confirmCancelBtn" onclick="hideConfirm()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // =====================================================
         // 🔥 FIREBASE CONFIG
@@ -1715,25 +2054,79 @@
 
         console.log("✅ Firebase initialized!");
 
+        // Global variables
+        let pendingUpdateData = null;
+        let currentUser = null; // Stores logged-in user data: { name, key, password }
+        let lastCalculatedResult = null; // Stores last calculation for LB submission
+
+        // =====================================================
+        // 🔐 PASSWORD HASHING UTILITIES (Base64)
+        // =====================================================
+        
+        function hashPassword(password) {
+            // Simple Base64 encoding (better than plaintext!)
+            return btoa(password);
+        }
+
+        function verifyPassword(inputPassword, storedHashedPassword) {
+            return hashPassword(inputPassword) === storedHashedPassword;
+        }
+
+        /* ── SESSION MANAGEMENT ── */
+        function checkExistingSession() {
+            const savedSession = localStorage.getItem('dfr_user_session');
+            if (savedSession) {
+                try {
+                    currentUser = JSON.parse(savedSession);
+                    updateUserStatusUI(true);
+                    console.log(`✅ Session restored: ${currentUser.name}`);
+                } catch (e) {
+                    console.log("⚠️ Invalid session, clearing...");
+                    logoutUser();
+                }
+            }
+        }
+
+        function saveSession(userData) {
+            currentUser = userData;
+            localStorage.setItem('dfr_user_session', JSON.stringify(userData));
+            updateUserStatusUI(true);
+            console.log(`✅ Session saved: ${userData.name}`);
+        }
+
+        function logoutUser() {
+            currentUser = null;
+            localStorage.removeItem('dfr_user_session');
+            updateUserStatusUI(false);
+            console.log("👋 User logged out");
+        }
+
+        function updateUserStatusUI(isLoggedIn) {
+            const userStatusEl = document.getElementById('userStatus');
+            const userNameEl = document.getElementById('userNameDisplay');
+            
+            if (isLoggedIn && currentUser) {
+                userStatusEl.style.display = 'flex';
+                userNameEl.textContent = currentUser.name;
+            } else {
+                userStatusEl.style.display = 'none';
+                userNameEl.textContent = 'Player';
+            }
+        }
+
         /* ── PAGE NAV ── */
         function showPage(name) {
-            // Hide all pages
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            
-            // Show selected page
             document.getElementById('page-' + name).classList.add('active');
             
-            // Update nav links
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
             const link = document.getElementById('nav-' + name);
             if (link) link.classList.add('active');
             
-            // Load leaderboard when guild page opens
             if (name === 'guild') {
                 loadLeaderboard();
             }
             
-            // Scroll to top of new page
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -1803,8 +2196,16 @@
                 localStorage.setItem('dmgHistory', JSON.stringify(history));
                 loadHistory();
 
-                // Save to Firebase leaderboard
-                saveToLeaderboard(result, pct, cc, cd);
+                // Store result for potential LB submission
+                lastCalculatedResult = {
+                    value: result,
+                    percentDamage: pct,
+                    critChance: cc,
+                    critDamage: cd
+                };
+
+                // Show "Save to LB" button
+                document.getElementById('saveLbBtn').style.display = 'block';
 
             } catch(e) {
                 showError('An error occurred. Please check your inputs.');
@@ -1812,41 +2213,455 @@
             }
         }
 
-        /* ── SAVE TO LEADERBOARD ── */
-        function saveToLeaderboard(result, percentDmg, critChance, critDmg) {
-            const playerName = prompt("🏆 Enter your name for the Global Leaderboard:\n\n" +
-                                     `Your score: ${result.toFixed(3)}x`) || "Anonymous";
-            
-            if (!playerName.trim()) return;
+        /* ── INITIATE SAVE TO LEADERBOARD ── */
+        function initiateSaveToLB() {
+            if (!lastCalculatedResult) {
+                showError('No calculation to save. Please calculate first!');
+                return;
+            }
 
-            const entry = {
-                name: playerName.trim(),
-                score: result,
-                percentDamage: percentDmg,
+            // Check if user is already logged in
+            if (currentUser) {
+                // Already logged in - proceed directly to check/update
+                checkAndPrepareSubmission(currentUser.name, lastCalculatedResult);
+            } else {
+                // Not logged in - show auth modal
+                showAuthModal('login');
+            }
+        }
+
+        /* ── AUTH MODAL SYSTEM ── */
+        function showAuthModal(mode) {
+            const overlay = document.getElementById('authOverlay');
+            const modalContent = document.getElementById('authModalContent');
+            
+            if (mode === 'login') {
+                modalContent.innerHTML = `
+                    <div class="auth-icon">🔐</div>
+                    <div class="auth-title">Login to Leaderboard</div>
+                    <div class="auth-subtitle">Enter your credentials to submit your score</div>
+                    
+                    <div class="auth-field">
+                        <label>Player Name</label>
+                        <input type="text" id="loginName" placeholder="Enter your name" autocomplete="username">
+                    </div>
+                    
+                    <div class="auth-field">
+                        <label>Password</label>
+                        <input type="password" id="loginPassword" placeholder="Enter password" autocomplete="current-password">
+                    </div>
+                    
+                    <button class="auth-btn auth-btn-primary" onclick="handleLogin()">🔓 Login</button>
+                    
+                    <div class="auth-switch">
+                        Don't have an account? <a onclick="showAuthModal('register')">Register here</a>
+                    </div>
+                `;
+            } else if (mode === 'register') {
+                modalContent.innerHTML = `
+                    <div class="auth-icon">✨</div>
+                    <div class="auth-title">Create Account</div>
+                    <div class="auth-subtitle">Register to join the Guild Leaderboard</div>
+                    
+                    <div class="auth-field">
+                        <label>Player Name</label>
+                        <input type="text" id="registerName" placeholder="Choose a unique name" autocomplete="username">
+                    </div>
+                    
+                    <div class="auth-field">
+                        <label>Password</label>
+                        <input type="password" id="registerPassword" placeholder="Create a password" autocomplete="new-password">
+                    </div>
+                    
+                    <div class="auth-field">
+                        <label>Confirm Password</label>
+                        <input type="password" id="registerConfirmPassword" placeholder="Confirm password" autocomplete="new-password">
+                    </div>
+                    
+                    <button class="auth-btn auth-btn-primary" onclick="handleRegister()">✨ Create Account</button>
+                    
+                    <div class="auth-switch">
+                        Already have an account? <a onclick="showAuthModal('login')">Login here</a>
+                    </div>
+                `;
+            }
+            
+            overlay.style.display = 'flex';
+            
+            // Focus first input after a short delay
+            setTimeout(() => {
+                const firstInput = modalContent.querySelector('input');
+                if (firstInput) firstInput.focus();
+            }, 100);
+        }
+
+        function hideAuthModal() {
+            document.getElementById('authOverlay').style.display = 'none';
+        }
+
+        /* ── HANDLE REGISTRATION (Option B: Separate Tables) ── */
+        function handleRegister() {
+            const name = document.getElementById('registerName').value.trim();
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('registerConfirmPassword').value;
+
+            // Validation
+            if (!name || name.length < 3) {
+                showError('❌ Name must be at least 3 characters!');
+                return;
+            }
+
+            if (!password || password.length < 4) {
+                showError('❌ Password must be at least 4 characters!');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showError('❌ Passwords do not match!');
+                return;
+            }
+
+            // Check for anonymous patterns
+            const anonymousPatterns = ['anonymous', 'anon', 'guest', 'unknown', 'none', 'null', 'undefined'];
+            if (anonymousPatterns.includes(name.toLowerCase())) {
+                showError('❌ This name is not allowed!');
+                return;
+            }
+
+            // Hash password before storing!
+            const hashedPassword = hashPassword(password);
+
+            // Check if name already exists in USERS table
+            database.ref('users')
+                .orderByChild('name')
+                .equalTo(name)
+                .once('value')
+                .then((snapshot) => {
+                    if (snapshot.exists()) {
+                        showError('❌ This name is already taken!\nPlease choose a different name.');
+                        return;
+                    }
+
+                    // Create new entry in USERS table
+                    const userEntry = {
+                        name: name,
+                        password: hashedPassword, // Hashed password!
+                        createdAt: Date.now(),
+                        lastLogin: Date.now()
+                    };
+
+                    database.ref('users').push(userEntry)
+                        .then((userRef) => {
+                            console.log(`✅ User account created in /users/ table: ${name}`);
+
+                            // Also create EMPTY entry in LEADERBOARD table
+                            const lbEntry = {
+                                userId: userRef.key, // Link to users table
+                                name: name,
+                                score: 0, // Initial score (will be updated on first submission)
+                                percentDamage: 0,
+                                critChance: 0,
+                                critDamage: 0,
+                                timestamp: Date.now(),
+                                date: new Date().toLocaleDateString(),
+                                time: new Date().toLocaleTimeString()
+                            };
+
+                            return database.ref('leaderboard').push(lbEntry)
+                                .then((lbRef) => {
+                                    console.log(`✅ Empty leaderboard entry created in /leaderboard/ table`);
+
+                                    // Auto-login after registration
+                                    saveSession({
+                                        name: name,
+                                        key: userRef.key, // User's key from /users/
+                                        lbKey: lbRef.key, // Leaderboard entry key
+                                        password: hashedPassword
+                                    });
+
+                                    hideAuthModal();
+
+                                    showSuccess(
+                                        `<strong>Welcome, ${escapeHtml(name)}!</strong><br><br>` +
+                                        `🎉 Your account has been created!<br>` +
+                                        `Now calculating your first submission...`
+                                    );
+
+                                    // Proceed to submit current calculation
+                                    setTimeout(() => {
+                                        if (lastCalculatedResult) {
+                                            checkAndPrepareSubmission(name, lastCalculatedResult);
+                                        }
+                                    }, 1500);
+                                });
+                        })
+                        .catch((error) => {
+                            console.error("❌ Error creating account:", error);
+                            showError("Failed to create account. Please try again.");
+                        });
+                })
+                .catch((error) => {
+                    console.error("❌ Error checking name:", error);
+                    showError("Failed to verify name availability.");
+                });
+        }
+
+        /* ── HANDLE LOGIN ── */
+        function handleLogin() {
+            const name = document.getElementById('loginName').value.trim();
+            const password = document.getElementById('loginPassword').value;
+
+            // Validation
+            if (!name || !password) {
+                showError('❌ Please enter both name and password!');
+                return;
+            }
+
+            // Hash the input password for comparison
+            const hashedInputPassword = hashPassword(password);
+
+            // Query USERS table for this user
+            database.ref('users')
+                .orderByChild('name')
+                .equalTo(name)
+                .once('value')
+                .then((snapshot) => {
+                    if (!snapshot.exists()) {
+                        showError('❌ User not found!<br>Please check your name or register.');
+                        return;
+                    }
+
+                    const entries = snapshot.val();
+                    const userKey = Object.keys(entries)[0];
+                    const userData = entries[userKey];
+
+                    // Verify password using hash comparison
+                    if (!verifyPassword(password, userData.password)) {
+                        showError('❌ Incorrect password!<br>Please try again.');
+                        return;
+                    }
+
+                    // Successful login - update lastLogin
+                    database.ref('users/' + userKey).update({
+                        lastLogin: Date.now()
+                    });
+
+                    // Find corresponding leaderboard entry
+                    database.ref('leaderboard')
+                        .orderByChild('userId')
+                        .equalTo(userKey)
+                        .once('value')
+                        .then((lbSnapshot) => {
+                            let lbKey = null;
+                            if (lbSnapshot.exists()) {
+                                const lbEntries = lbSnapshot.val();
+                                lbKey = Object.keys(lbEntries)[0];
+                            }
+
+                            // Save session with both keys
+                            saveSession({
+                                name: name,
+                                key: userKey, // From /users/
+                                lbKey: lbKey, // From /leaderboard/
+                                password: hashedInputPassword
+                            });
+
+                            hideAuthModal();
+                            
+                            showSuccess(
+                                `<strong>Welcome back, ${escapeHtml(name)}!</strong><br><br>` +
+                                `🔓 Successfully logged in!<br>` +
+                                `Preparing your score submission...`
+                            );
+
+                            // Proceed to submit current calculation
+                            setTimeout(() => {
+                                if (lastCalculatedResult) {
+                                    checkAndPrepareSubmission(name, lastCalculatedResult);
+                                }
+                            }, 1500);
+                        })
+                        .catch((error) => {
+                            console.error("❌ Error finding leaderboard entry:", error);
+                            // Still log in even if no LB entry found
+                            saveSession({
+                                name: name,
+                                key: userKey,
+                                lbKey: null,
+                                password: hashedInputPassword
+                            });
+
+                            hideAuthModal();
+                            
+                            showSuccess(
+                                `<strong>Welcome back, ${escapeHtml(name)}!</strong><br><br>` +
+                                `🔓 Successfully logged in!<br>`
+                            );
+                        });
+                })
+                .catch((error) => {
+                    console.error("❌ Error logging in:", error);
+                    showError("Failed to login. Please try again.");
+                });
+        }
+
+        /* ── CHECK AND PREPARE SUBMISSION ── */
+        function checkAndPrepareSubmission(userName, calcData) {
+            // Get current user's leaderboard entry
+            if (!currentUser || !currentUser.lbKey) {
+                // No leaderboard entry found - this shouldn't happen normally
+                showError('❌ Leaderboard entry not found. Please contact admin.');
+                return;
+            }
+
+            database.ref('leaderboard/' + currentUser.lbKey)
+                .once('value')
+                .then((snapshot) => {
+                    if (!snapshot.exists()) {
+                        showError('❌ Leaderboard entry not found!');
+                        return;
+                    }
+
+                    const lbData = snapshot.val();
+                    const currentScore = lbData.score || 0;
+                    const newScore = calcData.value;
+
+                    // Store update data globally
+                    pendingUpdateData = {
+                        lbKey: currentUser.lbKey, // Leaderboard entry key
+                        name: userName,
+                        newResult: newScore,
+                        oldScore: currentScore,
+                        percentDamage: calcData.percentDamage,
+                        critChance: calcData.critChance,
+                        critDamage: calcData.critDamage
+                    };
+
+                    // Show smart comparison modal
+                    showSmartComparisonModal(userName, currentScore, newScore);
+                })
+                .catch((error) => {
+                    console.error("❌ Error checking user:", error);
+                    showError("Failed to prepare submission.");
+                });
+        }
+
+        /* ── SMART COMPARISON MODAL ── */
+        function showSmartComparisonModal(playerName, oldScore, newScore) {
+            const iconEl = document.getElementById('confirmIcon');
+            const titleEl = document.getElementById('confirmTitle');
+            const msgEl = document.getElementById('confirmMsg');
+            const playerEl = document.getElementById('confirmPlayerName');
+            const oldScoreEl = document.getElementById('confirmOldScore');
+            const newScoreEl = document.getElementById('confirmNewScore');
+            const oldLabelEl = document.getElementById('oldScoreLabel');
+            const newLabelEl = document.getElementById('newScoreLabel');
+            const improvementEl = document.getElementById('confirmImprovement');
+            const updateBtn = document.getElementById('confirmUpdateBtn');
+            const cancelBtn = document.getElementById('confirmCancelBtn');
+
+            playerEl.textContent = playerName;
+            oldScoreEl.textContent = oldScore.toFixed(3) + 'x';
+            newScoreEl.textContent = newScore.toFixed(3) + 'x';
+
+            const difference = ((newScore - oldScore) / oldScore * 100).toFixed(1);
+
+            if (newScore > oldScore) {
+                // NEW PERSONAL BEST!
+                iconEl.textContent = '🎉';
+                titleEl.textContent = 'NEW PERSONAL BEST!';
+                titleEl.style.color = 'var(--green)';
+                msgEl.textContent = 'Congratulations! You beat your previous record!';
+                oldLabelEl.textContent = 'Previous Best';
+                newLabelEl.textContent = 'NEW RECORD!';
+                improvementEl.className = 'conf-improvement positive';
+                improvementEl.innerHTML = `📈 +${Math.abs(difference)}% Improvement!`;
+                updateBtn.textContent = '✓ Update to New Best';
+                updateBtn.className = 'conf-btn conf-btn-update';
+                cancelBtn.textContent = 'Cancel';
+            } else if (newScore < oldScore) {
+                // LOWER THAN BEST
+                iconEl.textContent = '⚠️';
+                titleEl.textContent = 'Score Lower Than Record';
+                titleEl.style.color = 'var(--orange)';
+                msgEl.textContent = 'This submission is lower than your current best score.';
+                oldLabelEl.textContent = 'Current Best';
+                newLabelEl.textContent = 'New Score';
+                improvementEl.className = 'conf-improvement negative';
+                improvementEl.innerHTML = `⬇️ ${difference}% Change`;
+                updateBtn.textContent = '⬇️ Update Anyway';
+                updateBtn.className = 'conf-btn conf-btn-update';
+                updateBtn.style.background = 'var(--orange)';
+                updateBtn.style.color = '#000';
+                cancelBtn.textContent = '❌ Keep Current Best';
+            } else {
+                // SAME SCORE
+                iconEl.textContent = '➡️';
+                titleEl.textContent = 'Same Score';
+                titleEl.style.color = 'var(--text-secondary)';
+                msgEl.textContent = 'This matches your current score exactly.';
+                oldLabelEl.textContent = 'Current Score';
+                newLabelEl.textContent = 'New Score';
+                improvementEl.className = 'conf-improvement';
+                improvementEl.style.background = 'var(--surface-2)';
+                improvementEl.style.color = 'var(--text-muted)';
+                improvementEl.style.border = '1px solid var(--border)';
+                improvementEl.innerHTML = '→ No change';
+                updateBtn.textContent = 'Update Timestamp';
+                cancelBtn.textContent = 'Cancel';
+            }
+
+            document.getElementById('confirmOverlay').style.display = 'flex';
+        }
+
+        /* ── CONFIRM UPDATE ── */
+        function confirmUpdate() {
+            if (!pendingUpdateData) {
+                hideConfirm();
+                return;
+            }
+
+            const { lbKey, name, newResult, percentDamage, critChance, critDamage } = pendingUpdateData;
+
+            const updatedEntry = {
+                userId: currentUser ? currentUser.key : null, // Keep reference to user
+                name: name,
+                score: newResult,
+                percentDamage: percentDamage,
                 critChance: critChance,
-                critDamage: critDmg,
+                critDamage: critDamage,
                 timestamp: Date.now(),
                 date: new Date().toLocaleDateString(),
                 time: new Date().toLocaleTimeString()
             };
 
-            database.ref('leaderboard').push(entry)
+            database.ref('leaderboard/' + lbKey).update(updatedEntry)
                 .then(() => {
-                    console.log("✅ Saved to leaderboard!");
+                    console.log(`✅ Updated ${name}'s score to ${newResult.toFixed(3)}x`);
+                    
+                    hideConfirm();
                     
                     showSuccess(
-                        `<strong>${escapeHtml(playerName)}</strong> added to leaderboard!<br><br>` +
-                        `🎯 Score: <strong>${result.toFixed(3)}x</strong><br>` +
+                        `<strong>${escapeHtml(name)}</strong>'s score updated!<br><br>` +
+                        `🎯 New Score: <strong>${newResult.toFixed(3)}x</strong><br>` +
                         `Check the <strong>Guild LB</strong> tab to see your ranking!`
                     );
+                    
+                    pendingUpdateData = null;
                 })
                 .catch((error) => {
-                    console.error("❌ Error saving:", error);
-                    showError("Failed to save to leaderboard.");
+                    console.error("❌ Error updating:", error);
+                    hideConfirm();
+                    showError("Failed to update score.");
+                    pendingUpdateData = null;
                 });
         }
 
-        /* ── LOAD LEADERBOARD ── */
+        function hideConfirm() {
+            document.getElementById('confirmOverlay').style.display = 'none';
+        }
+
+        /* ── LOAD LEADERBOARD (LIMITED TO 15) ── */
         function loadLeaderboard() {
             const tbody = document.getElementById('leaderboardBody');
             
@@ -1854,7 +2669,7 @@
 
             database.ref('leaderboard')
                 .orderByChild('score')
-                .limitToLast(50)
+                .limitToLast(15)
                 .once('value')
                 .then((snapshot) => {
                     const data = snapshot.val();
@@ -1895,7 +2710,7 @@
                         tbody.appendChild(tr);
                     });
 
-                    console.log(`✅ Loaded ${entries.length} entries`);
+                    console.log(`✅ Loaded ${entries.length} entries (Top 15)`);
                 })
                 .catch((error) => {
                     console.error("❌ Error loading:", error);
@@ -1926,7 +2741,7 @@
 
         /* ── MODALS ── */
         function showError(msg) {
-            document.getElementById('errorText').textContent = msg;
+            document.getElementById('errorText').innerHTML = msg;
             document.getElementById('errorOverlay').style.display = 'flex';
         }
 
@@ -1936,13 +2751,14 @@
 
         function handleOverlayClick(e) {
             if (e.target.id === 'errorOverlay') hideError();
+            if (e.target.id === 'authOverlay') hideAuthModal();
         }
 
         function showSuccess(msg) {
             document.getElementById('successText').innerHTML = msg;
             document.getElementById('successOverlay').style.display = 'flex';
             
-            setTimeout(() => hideSuccess(), 4000);
+            setTimeout(() => hideSuccess(), 5000);
         }
 
         function hideSuccess() {
@@ -1952,6 +2768,21 @@
         /* ── MISC EVENTS ── */
         document.addEventListener('keypress', e => { 
             if (e.key === 'Enter') calculate(); 
+        });
+
+        // Handle Enter key in auth forms
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const authOverlay = document.getElementById('authOverlay');
+                if (authOverlay.style.display === 'flex') {
+                    // Determine which form is visible and submit
+                    if (document.getElementById('loginPassword')) {
+                        handleLogin();
+                    } else if (document.getElementById('registerConfirmPassword')) {
+                        handleRegister();
+                    }
+                }
+            }
         });
 
         // Prevent double-tap zoom on mobile
@@ -1973,6 +2804,7 @@
         window.addEventListener('DOMContentLoaded', () => {
             loadMaxValue();
             loadHistory();
+            checkExistingSession(); // Restore login session if exists
         });
     </script>
 </body>
