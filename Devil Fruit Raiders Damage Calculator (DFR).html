@@ -91,6 +91,7 @@
             padding: 0 24px;
             z-index: 1000;
             gap: 16px;
+            flex-wrap: nowrap;
         }
 
         .nav-brand {
@@ -103,6 +104,7 @@
         .nav-logo {
             width: 36px;
             height: 36px;
+            min-width: 36px;
             border-radius: 8px;
             background: linear-gradient(135deg, var(--accent), var(--orange));
             display: flex;
@@ -125,16 +127,17 @@
 
         .nav-title span { color: var(--accent); }
 
-        /* Desktop Nav Links */
+        /* Navigation Links - ALWAYS VISIBLE */
         .nav-links {
             display: flex;
             align-items: center;
             gap: 6px;
             flex-shrink: 0;
+            flex-wrap: nowrap;
         }
 
         .nav-link {
-            padding: 8px 14px;
+            padding: 7px 14px;
             border-radius: 8px;
             font-size: 13px;
             font-weight: 600;
@@ -152,10 +155,18 @@
             justify-content: center;
             -webkit-tap-highlight-color: transparent;
             touch-action: manipulation;
+            flex-shrink: 0;
         }
 
-        .nav-link:hover { color: var(--text); background: var(--surface-2); }
-        .nav-link.active { color: var(--accent); background: var(--accent-dim); }
+        .nav-link:hover { 
+            color: var(--text); 
+            background: var(--surface-2); 
+        }
+        
+        .nav-link.active { 
+            color: var(--accent); 
+            background: var(--accent-dim); 
+        }
 
         .nav-badge {
             padding: 6px 12px;
@@ -166,131 +177,8 @@
             background: linear-gradient(135deg, var(--accent), #0099cc);
             letter-spacing: 0.5px;
             white-space: nowrap;
-            margin-left: 8px;
-        }
-
-        /* ✨ MOBILE HAMBURGER MENU */
-        .hamburger {
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            width: 44px;
-            height: 44px;
-            background: transparent;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            cursor: pointer;
-            gap: 5px;
-            padding: 10px;
-            transition: all 0.3s;
-            -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
-        }
-
-        .hamburger span {
-            display: block;
-            width: 22px;
-            height: 2px;
-            background: var(--text);
-            border-radius: 2px;
-            transition: all 0.3s ease;
-        }
-
-        .hamburger.active span:nth-child(1) {
-            transform: rotate(45deg) translate(5px, 5px);
-        }
-        
-        .hamburger.active span:nth-child(2) {
-            opacity: 0;
-        }
-        
-        .hamburger.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(5px, -5px);
-        }
-
-        /* Mobile Menu Overlay */
-        .mobile-menu-overlay {
-            display: none;
-            position: fixed;
-            top: var(--nav-h);
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
-            z-index: 999;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .mobile-menu-overlay.active {
-            opacity: 1;
-        }
-
-        /* Mobile Menu Container */
-        .mobile-menu {
-            display: none;
-            position: fixed;
-            top: var(--nav-h);
-            left: 0;
-            right: 0;
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
-            z-index: 1001;
-            transform: translateY(-100%);
-            transition: transform 0.3s ease;
-            max-height: calc(100vh - var(--nav-h));
-            overflow-y: auto;
-        }
-
-        .mobile-menu.active {
-            transform: translateY(0);
-        }
-
-        .mobile-menu-links {
-            display: flex;
-            flex-direction: column;
-            padding: 16px;
-            gap: 8px;
-        }
-
-        .mobile-menu-link {
-            width: 100%;
-            padding: 16px 20px;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: all 0.2s;
-            border: 1px solid var(--border);
-            background: var(--surface-2);
-            font-family: 'Syne', sans-serif;
-            text-align: left;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            min-height: 56px;
-            -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
-        }
-
-        .mobile-menu-link:active {
-            transform: scale(0.98);
-        }
-
-        .mobile-menu-link.active {
-            color: var(--accent);
-            background: var(--accent-dim);
-            border-color: var(--border-accent);
-        }
-
-        .mobile-menu-link-icon {
-            font-size: 20px;
-            width: 32px;
-            text-align: center;
+            margin-left: 6px;
+            flex-shrink: 0;
         }
 
         /* ═══════════════ PAGES ═══════════════ */
@@ -472,7 +360,7 @@
             border: 1px solid var(--border);
             border-radius: var(--radius);
             padding: 0 16px;
-            font-size: 16px; /* Larger for iOS */
+            font-size: 16px;
             font-family: 'Space Mono', monospace;
             color: var(--text);
             outline: none;
@@ -676,7 +564,6 @@
 
         .clear-btn:active { 
             transform: scale(0.97); 
-            background: rgba(255, 59, 92, 0.1); 
         }
 
         .credit {
@@ -1111,41 +998,52 @@
             }
         }
 
-        /* Mobile Navigation */
+        /* Mobile - Keep Horizontal Nav! */
         @media (max-width: 768px) {
+            :root {
+                --nav-h: 56px;
+            }
+
             nav {
-                padding: 0 16px;
-                gap: 12px;
+                padding: 0 12px;
+                gap: 8px;
+            }
+
+            .nav-brand {
+                gap: 8px;
+            }
+
+            .nav-logo {
+                width: 32px;
+                height: 32px;
+                min-width: 32px;
+                font-size: 10px;
             }
 
             .nav-title { 
                 font-size: 15px; 
             }
 
-            /* Hide desktop links, show hamburger */
-            .nav-links { 
-                display: none !important; 
+            /* Keep nav links visible but make them compact */
+            .nav-links {
+                gap: 4px;
             }
 
-            .nav-badge { 
-                display: none; 
+            .nav-link {
+                padding: 6px 10px;
+                font-size: 12px;
+                min-height: 36px;
+                min-width: 36px;
             }
 
-            .hamburger {
-                display: flex;
-            }
-
-            /* Show mobile menu */
-            .mobile-menu {
-                display: block;
-            }
-
-            .mobile-menu-overlay {
-                display: block;
+            .nav-badge {
+                font-size: 9px;
+                padding: 5px 8px;
+                margin-left: 4px;
             }
 
             main {
-                padding: calc(var(--nav-h) + 24px) 16px 32px;
+                padding: calc(var(--nav-h) + 24px) 12px 32px;
                 gap: 20px;
             }
 
@@ -1198,30 +1096,43 @@
         /* Small Mobile */
         @media (max-width: 480px) {
             :root {
-                --nav-h: 56px;
+                --nav-h: 52px;
             }
 
             nav {
-                padding: 0 12px;
+                padding: 0 10px;
+                gap: 6px;
             }
 
             .nav-logo {
-                width: 32px;
-                height: 32px;
-                font-size: 10px;
+                width: 28px;
+                height: 28px;
+                min-width: 28px;
+                font-size: 9px;
             }
 
             .nav-title {
-                font-size: 14px;
+                font-size: 13px;
             }
 
-            .hamburger {
-                width: 40px;
-                height: 40px;
+            .nav-links {
+                gap: 3px;
+            }
+
+            .nav-link {
+                padding: 5px 8px;
+                font-size: 11px;
+                min-height: 34px;
+                min-width: 34px;
+                border-radius: 6px;
+            }
+
+            .nav-badge {
+                display: none; /* Hide badge on very small screens */
             }
 
             main {
-                padding: calc(var(--nav-h) + 20px) 12px 28px;
+                padding: calc(var(--nav-h) + 20px) 10px 28px;
                 gap: 16px;
             }
 
@@ -1310,12 +1221,6 @@
                 min-height: 48px;
             }
 
-            .mobile-menu-link {
-                padding: 14px 16px;
-                font-size: 15px;
-                min-height: 52px;
-            }
-
             .error-modal,
             .success-modal {
                 padding: 24px 20px;
@@ -1326,19 +1231,21 @@
         /* Extra Small Mobile */
         @media (max-width: 360px) {
             .nav-title {
-                font-size: 13px;
+                font-size: 12px;
             }
 
-            .nav-logo {
-                width: 28px;
-                height: 28px;
+            .nav-link {
+                padding: 5px 6px;
+                font-size: 10px;
+                min-height: 32px;
+                min-width: 32px;
             }
         }
 
         /* Landscape Mobile */
         @media (max-height: 500px) and (orientation: landscape) {
             :root {
-                --nav-h: 50px;
+                --nav-h: 46px;
             }
 
             main {
@@ -1369,8 +1276,8 @@
 
             @media (max-width: 768px) {
                 nav {
-                    padding-left: max(16px, env(safe-area-inset-left));
-                    padding-right: max(16px, env(safe-area-inset-right));
+                    padding-left: max(10px, env(safe-area-inset-left));
+                    padding-right: max(10px, env(safe-area-inset-right));
                     height: calc(var(--nav-h) + env(safe-area-inset-top));
                     padding-top: env(safe-area-inset-top);
                 }
@@ -1384,49 +1291,21 @@
 </head>
 <body>
 
-    <!-- NAVBAR -->
+    <!-- NAVBAR - HORIZONTAL ON ALL DEVICES -->
     <nav>
         <div class="nav-brand">
             <div class="nav-logo">DFR</div>
             <div class="nav-title"><span>DFR</span> Calculator</div>
         </div>
 
-        <!-- Desktop Navigation Links -->
+        <!-- Navigation Links - Always Visible -->
         <div class="nav-links">
             <button class="nav-link active" id="nav-calc" onclick="showPage('calc')">DMG Calc</button>
             <button class="nav-link" id="nav-builds" onclick="showPage('builds')">Builds</button>
             <button class="nav-link" id="nav-guild" onclick="showPage('guild')">Guild LB</button>
             <span class="nav-badge">Devil Fruit Raiders</span>
         </div>
-
-        <!-- Mobile Hamburger Button -->
-        <button class="hamburger" id="hamburgerBtn" onclick="toggleMobileMenu()" aria-label="Menu">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
     </nav>
-
-    <!-- Mobile Menu Overlay (click to close) -->
-    <div class="mobile-menu-overlay" id="mobileMenuOverlay" onclick="closeMobileMenu()"></div>
-
-    <!-- Mobile Menu -->
-    <div class="mobile-menu" id="mobileMenu">
-        <div class="mobile-menu-links">
-            <button class="mobile-menu-link active" id="mobile-nav-calc" onclick="showPage('calc'); closeMobileMenu();">
-                <span class="mobile-menu-link-icon">⚔️</span>
-                DMG Calculator
-            </button>
-            <button class="mobile-menu-link" id="mobile-nav-builds" onclick="showPage('builds'); closeMobileMenu();">
-                <span class="mobile-menu-link-icon">🗡️</span>
-                Best Builds
-            </button>
-            <button class="mobile-menu-link" id="mobile-nav-guild" onclick="showPage('guild'); closeMobileMenu();">
-                <span class="mobile-menu-link-icon">🏆</span>
-                Guild Leaderboard
-            </button>
-        </div>
-    </div>
 
     <!-- PAGE: DMG CALC -->
     <main class="page active" id="page-calc">
@@ -1822,35 +1701,6 @@
 
         console.log("✅ Firebase initialized!");
 
-        /* ── MOBILE MENU ── */
-        function toggleMobileMenu() {
-            const hamburger = document.getElementById('hamburgerBtn');
-            const menu = document.getElementById('mobileMenu');
-            const overlay = document.getElementById('mobileMenuOverlay');
-            
-            hamburger.classList.toggle('active');
-            menu.classList.toggle('active');
-            overlay.classList.toggle('active');
-            
-            // Prevent body scroll when menu is open
-            if (menu.classList.contains('active')) {
-                document.body.style.overflow = 'hidden';
-            } else {
-                document.body.style.overflow = '';
-            }
-        }
-
-        function closeMobileMenu() {
-            const hamburger = document.getElementById('hamburgerBtn');
-            const menu = document.getElementById('mobileMenu');
-            const overlay = document.getElementById('mobileMenuOverlay');
-            
-            hamburger.classList.remove('active');
-            menu.classList.remove('active');
-            overlay.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-
         /* ── PAGE NAV ── */
         function showPage(name) {
             // Hide all pages
@@ -1859,15 +1709,10 @@
             // Show selected page
             document.getElementById('page-' + name).classList.add('active');
             
-            // Update desktop nav
+            // Update nav links
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            const desktopLink = document.getElementById('nav-' + name);
-            if (desktopLink) desktopLink.classList.add('active');
-            
-            // Update mobile nav
-            document.querySelectorAll('.mobile-menu-link').forEach(l => l.classList.remove('active'));
-            const mobileLink = document.getElementById('mobile-nav-' + name);
-            if (mobileLink) mobileLink.classList.add('active');
+            const link = document.getElementById('nav-' + name);
+            if (link) link.classList.add('active');
             
             // Load leaderboard when guild page opens
             if (name === 'guild') {
@@ -1876,9 +1721,6 @@
             
             // Scroll to top of new page
             window.scrollTo({ top: 0, behavior: 'smooth' });
-            
-            // Close mobile menu if open
-            closeMobileMenu();
         }
 
         /* ── CALCULATOR ── */
@@ -2096,11 +1938,6 @@
         /* ── MISC EVENTS ── */
         document.addEventListener('keypress', e => { 
             if (e.key === 'Enter') calculate(); 
-        });
-
-        // Close mobile menu on escape key
-        document.addEventListener('keydown', e => {
-            if (e.key === 'Escape') closeMobileMenu();
         });
 
         // Prevent double-tap zoom on mobile
