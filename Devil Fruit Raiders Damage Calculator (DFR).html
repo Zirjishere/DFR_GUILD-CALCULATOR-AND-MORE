@@ -22,6 +22,7 @@
             --orange: #ff6b35;
             --orange-dim: rgba(255, 107, 53, 0.12);
             --green: #00e5a0;
+            --green-dim: rgba(0, 229, 160, 0.12);
             --purple: #b06aff;
             --purple-dim: rgba(176, 106, 255, 0.12);
             --gold: #ffd700;
@@ -34,10 +35,10 @@
             --radius: 10px;
         }
 
-        *, *::before, *::after { 
-            margin: 0; 
-            padding: 0; 
-            box-sizing: border-box; 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         html {
@@ -50,7 +51,6 @@
             background-color: var(--bg);
             color: var(--text);
             min-height: 100vh;
-            min-height: 100dvh;
             display: flex;
             flex-direction: column;
             overflow-x: hidden;
@@ -125,8 +125,6 @@
             cursor: pointer;
             transition: all 0.2s;
             user-select: none;
-            position: relative;
-            z-index: 1001;
         }
 
         .nav-logo:hover {
@@ -170,11 +168,7 @@
             white-space: nowrap;
             min-height: 40px;
             min-width: 40px;
-            -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
             flex-shrink: 0;
-            position: relative;
-            z-index: 1001;
         }
 
         .nav-link:hover { 
@@ -190,7 +184,6 @@
         .nav-link-icon {
             font-size: 18px;
             line-height: 1;
-            display: block;
         }
 
         .nav-badge {
@@ -206,7 +199,34 @@
             flex-shrink: 0;
         }
 
-        /* User Status with Logout */
+        /* Login Button */
+        .auth-btn-nav {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 7px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--accent);
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid var(--border-accent);
+            background: var(--accent-dim);
+            font-family: 'Syne', sans-serif;
+            white-space: nowrap;
+            min-height: 40px;
+            flex-shrink: 0;
+        }
+
+        .auth-btn-nav:hover {
+            background: rgba(0, 220, 255, 0.2);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 220, 255, 0.3);
+        }
+
+        /* User Status */
         .user-status-container {
             display: flex;
             align-items: center;
@@ -227,7 +247,6 @@
             color: var(--green);
             border: 1px solid rgba(0, 229, 160, 0.3);
             cursor: default;
-            transition: all 0.2s;
             white-space: nowrap;
             max-width: 180px;
             overflow: hidden;
@@ -248,7 +267,6 @@
             50% { opacity: 0.5; transform: scale(0.8); }
         }
 
-        /* NEW: Logout Button */
         .logout-btn {
             display: flex;
             align-items: center;
@@ -263,8 +281,6 @@
             font-size: 16px;
             cursor: pointer;
             transition: all 0.2s;
-            -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
         }
 
         .logout-btn:hover {
@@ -481,7 +497,6 @@
             transition: border-color 0.2s, box-shadow 0.2s;
             -webkit-appearance: none;
             appearance: none;
-            -moz-appearance: textfield;
         }
 
         .field input::-webkit-inner-spin-button,
@@ -570,8 +585,6 @@
             position: relative;
             overflow: hidden;
             min-height: 52px;
-            -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
         }
 
         .calc-btn::before {
@@ -603,8 +616,6 @@
             position: relative;
             overflow: hidden;
             min-height: 52px;
-            -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
         }
 
         .save-lb-btn:hover {
@@ -701,8 +712,6 @@
             cursor: pointer;
             transition: all 0.2s;
             min-height: 46px;
-            -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
         }
 
         .clear-btn:active { transform: scale(0.97); }
@@ -1014,7 +1023,6 @@
             white-space: nowrap;
         }
 
-        /* Delete button for each row */
         .lb-delete-btn {
             background: rgba(255, 59, 92, 0.1);
             border: 1px solid rgba(255, 59, 92, 0.3);
@@ -1060,8 +1068,6 @@
             cursor: pointer;
             transition: all 0.2s;
             min-height: 52px;
-            -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
         }
 
         .refresh-lb-btn {
@@ -1087,8 +1093,7 @@
             border-color: rgba(255, 59, 92, 0.5);
         }
 
-        /* ═══════════════ MODALS ═══════════════ */
-        /* CRITICAL FIX: Error/Success modals must have HIGHEST z-index! */
+        /* MODALS */
         .modal-overlay {
             position: fixed; 
             inset: 0;
@@ -1099,25 +1104,16 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
+            z-index: 99998;
         }
 
         .modal-overlay.active {
             display: flex; 
         }
 
-        /* ERROR and SUCCESS overlays get HIGHEST priority */
         .error-overlay,
         .success-overlay {
-            z-index: 99999 !important; /* Highest z-index for errors */
-        }
-
-        .auth-overlay,
-        .confirm-overlay,
-        .admin-login-overlay,
-        .admin-panel-overlay,
-        .remove-player-overlay,
-        .reset-confirm-overlay {
-            z-index: 99998; /* Lower than error/success */
+            z-index: 99999 !important;
         }
 
         .modal {
@@ -1182,8 +1178,6 @@
             cursor: pointer;
             transition: all 0.2s;
             min-height: 48px;
-            -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
         }
 
         .error-modal .err-btn { background: var(--danger); color: #fff; }
@@ -1252,8 +1246,6 @@
             cursor: pointer;
             transition: all 0.2s;
             min-height: 52px;
-            -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
         }
 
         .auth-modal .auth-btn-primary {
@@ -1363,8 +1355,6 @@
             cursor: pointer;
             transition: all 0.2s;
             min-height: 48px;
-            -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
         }
 
         .confirm-modal .conf-btn-update { background: var(--green); color: #000; }
@@ -1387,8 +1377,6 @@
             cursor: pointer;
             transition: all 0.2s;
             min-height: 52px;
-            -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
         }
 
         .admin-modal .admin-btn-primary {
@@ -1451,7 +1439,6 @@
 
         .admin-info-value { color: var(--text); font-weight: 700; }
 
-        /* Player Remove Section */
         .admin-remove-section {
             margin-top: 20px;
             padding: 16px;
@@ -1540,9 +1527,10 @@
             .nav-logo { width: 32px; height: 32px; min-width: 32px; font-size: 10px; }
             .nav-title { font-size: 15px; }
             .nav-link { padding: 8px; font-size: 0; min-height: 42px; min-width: 42px; gap: 0; }
-            .nav-link-icon { font-size: 20px !important; display: block !important; }
+            .nav-link-icon { font-size: 20px !important; }
             .nav-badge { display: none; }
-            .logout-btn { display: none; } /* Hide logout on mobile */
+            .logout-btn { display: none; }
+            .auth-btn-nav { padding: 8px; font-size: 0; min-height: 42px; min-width: 42px; gap: 0; }
             main { padding: calc(var(--nav-h) + 24px) 12px 32px; gap: 20px; }
             .page-header { padding-bottom: 16px; }
             .build-card-header { padding: 16px 18px 12px; flex-direction: column; align-items: flex-start; gap: 10px; }
@@ -1646,13 +1634,18 @@
             </button>
             <span class="nav-badge">Devil Fruit Raiders</span>
             
-            <!-- User Status Container with Logout Button -->
+            <!-- FIX #1: Login/Signup Button (Visible when not logged in) -->
+            <button class="auth-btn-nav" id="authBtnNav" onclick="showAuthModal('login')">
+                <span class="nav-link-icon">👤</span>
+                <span>Login / Sign Up</span>
+            </button>
+            
+            <!-- User Status Container with Logout -->
             <div class="user-status-container" id="userStatusContainer" style="display: none;">
                 <div class="user-status" id="userStatus">
                     <span class="user-status-dot"></span>
                     <span id="userNameDisplay">Player</span>
                 </div>
-                <!-- NEW: Logout Button -->
                 <button class="logout-btn" id="logoutBtn" onclick="handleUserLogout()" title="Logout">
                     🚪
                 </button>
@@ -1928,7 +1921,6 @@
 
                 <button class="refresh-lb-btn" onclick="loadLeaderboard()">🔄 Refresh Leaderboard</button>
                 
-                <!-- Reset Button on Leaderboard Page -->
                 <button class="reset-lb-btn" id="resetLbBtn" onclick="showResetConfirm()" style="display:none;">
                     ⚠️ Reset Entire Leaderboard (Admin Only)
                 </button>
@@ -1936,7 +1928,7 @@
         </div>
     </main>
 
-    <!-- ERROR MODAL - HIGHEST Z-INDEX -->
+    <!-- ERROR MODAL -->
     <div class="modal-overlay error-overlay" id="errorOverlay" onclick="handleOverlayClick(event)">
         <div class="modal error-modal">
             <button class="modal-close-btn" onclick="hideError()">✕</button>
@@ -1947,7 +1939,7 @@
         </div>
     </div>
 
-    <!-- SUCCESS MODAL - HIGHEST Z-INDEX -->
+    <!-- SUCCESS MODAL -->
     <div class="modal-overlay success-overlay" id="successOverlay">
         <div class="modal success-modal">
             <button class="modal-close-btn" onclick="hideSuccess()">✕</button>
@@ -2160,10 +2152,7 @@
             }
         }
 
-        // ════════════════════════════════════════════════════════
-        // 🔐 USER LOGOUT FUNCTION - NEW!
-        // ════════════════════════════════════════════════════════
-        
+        // USER LOGOUT FUNCTION
         function handleUserLogout() {
             if (currentUser) {
                 if (confirm(`👋 Logout "${currentUser.name}"?`)) {
@@ -2172,6 +2161,47 @@
                 }
             }
         }
+
+        // FIX #2: BLOCK USER LOGIN IF ADMIN IS LOGGED IN
+        function showAuthModal(mode) {
+            // Prevent user login if admin is logged in
+            if (isAdminLoggedIn) {
+                showError('❌ <strong>Admin session active!</strong><br><br>Please logout from Admin panel first before logging in as a regular user.');
+                return;
+            }
+            
+            const modalContent = document.getElementById('authModalContent');
+            
+            if (mode === 'login') {
+                modalContent.innerHTML = `
+                    <button class="modal-close-btn" onclick="hideAuthModal()">✕</button>
+                    <div class="auth-icon">🔐</div>
+                    <div class="auth-title">Login to Leaderboard</div>
+                    <div class="auth-subtitle">Enter your credentials to submit your score</div>
+                    <div class="auth-field"><label>Player Name</label><input type="text" id="loginName" placeholder="Enter your name"></div>
+                    <div class="auth-field"><label>Password</label><input type="password" id="loginPassword" placeholder="Enter password"></div>
+                    <button class="auth-btn auth-btn-primary" onclick="handleLogin()">🔓 Login</button>
+                    <div class="auth-switch">Don't have an account? <a onclick="showAuthModal('register')">Register here</a></div>
+                `;
+            } else {
+                modalContent.innerHTML = `
+                    <button class="modal-close-btn" onclick="hideAuthModal()">✕</button>
+                    <div class="auth-icon">✨</div>
+                    <div class="auth-title">Create Account</div>
+                    <div class="auth-subtitle">Register to join the Guild Leaderboard</div>
+                    <div class="auth-field"><label>Player Name</label><input type="text" id="registerName" placeholder="Choose unique name"></div>
+                    <div class="auth-field"><label>Password</label><input type="password" id="registerPassword" placeholder="Create password"></div>
+                    <div class="auth-field"><label>Confirm Password</label><input type="password" id="registerConfirmPassword" placeholder="Confirm password"></div>
+                    <button class="auth-btn auth-btn-primary" onclick="handleRegister()">✨ Create Account</button>
+                    <div class="auth-switch">Already have account? <a onclick="showAuthModal('login')">Login here</a></div>
+                `;
+            }
+            
+            showModal('authOverlay');
+            setTimeout(() => { const firstInput = modalContent.querySelector('input'); if (firstInput) firstInput.focus(); }, 100);
+        }
+
+        function hideAuthModal() { hideModal('authOverlay'); }
 
         // ADMIN LOGIN SYSTEM
         function showAdminLogin() {
@@ -2191,6 +2221,11 @@
 
             if (!adminUser) { showError('❌ Invalid admin credentials!<br>Access denied.'); return; }
 
+            // Logout user before setting admin
+            if (currentUser) {
+                logoutUser();
+            }
+
             isAdminLoggedIn = true;
             hideAdminLogin();
             showAdminPanel();
@@ -2209,7 +2244,8 @@
         function logoutAdmin() {
             isAdminLoggedIn = false;
             hideAdminPanel();
-            updateUserStatusUI(currentUser ? true : false);
+            updateUserStatusUI(false);
+            updateAuthButtonUI();
             updateAdminUI();
             showSuccess('👋 Admin logged out successfully.');
         }
@@ -2236,10 +2272,7 @@
             }
         }
 
-        // ════════════════════════════════════════════════════════
-        // 🔥 COMPLETE LEADERBOARD RESET
-        // ════════════════════════════════════════════════════════
-        
+        // COMPLETE LEADERBOARD RESET
         function showResetConfirm() {
             if (!isAdminLoggedIn) { showError('❌ Admin access required!'); return; }
             showModal('resetConfirmOverlay');
@@ -2292,10 +2325,7 @@
             await executeFullReset();
         }
 
-        // ════════════════════════════════════════════════════════
-        // 🗑️ REMOVE SINGLE PLAYER FROM LEADERBOARD TABLE
-        // ════════════════════════════════════════════════════════
-        
+        // REMOVE SINGLE PLAYER FROM LEADERBOARD TABLE
         window.initiateRemoveFromTable = function(playerKey, playerName) {
             if (!isAdminLoggedIn) { 
                 showError('❌ Admin access required!'); 
@@ -2406,17 +2436,49 @@
             }
         }
 
+        // FIX #3: UPDATED UI FUNCTIONS FOR LOGIN BUTTON
+        function updateAuthButtonUI() {
+            const authBtnNav = document.getElementById('authBtnNav');
+            
+            // Show login button ONLY when no user AND no admin is logged in
+            if (!currentUser && !isAdminLoggedIn) {
+                authBtnNav.style.display = 'flex';
+            } else {
+                authBtnNav.style.display = 'none';
+            }
+        }
+
         // SESSION MANAGEMENT
         function checkExistingSession() {
             const savedSession = localStorage.getItem('dfr_user_session');
             if (savedSession) {
-                try { currentUser = JSON.parse(savedSession); updateUserStatusUI(true); }
-                catch (e) { logoutUser(); }
+                try { 
+                    currentUser = JSON.parse(savedSession); 
+                    updateUserStatusUI(true); 
+                    updateAuthButtonUI();
+                }
+                catch (e) { 
+                    logoutUser(); 
+                }
+            } else {
+                // Ensure login button is visible on load
+                updateAuthButtonUI();
             }
         }
 
-        function saveSession(userData) { currentUser = userData; localStorage.setItem('dfr_user_session', JSON.stringify(userData)); updateUserStatusUI(true); }
-        function logoutUser() { currentUser = null; localStorage.removeItem('dfr_user_session'); updateUserStatusUI(false); }
+        function saveSession(userData) { 
+            currentUser = userData; 
+            localStorage.setItem('dfr_user_session', JSON.stringify(userData)); 
+            updateUserStatusUI(true); 
+            updateAuthButtonUI(); // Hide login button after successful login
+        }
+        
+        function logoutUser() { 
+            currentUser = null; 
+            localStorage.removeItem('dfr_user_session'); 
+            updateUserStatusUI(false); 
+            updateAuthButtonUI(); // Show login button after logout
+        }
 
         function updateUserStatusUI(isLoggedIn) {
             const userStatusContainer = document.getElementById('userStatusContainer');
@@ -2507,47 +2569,29 @@
         // INITIATE SAVE TO LB
         function initiateSaveToLB() {
             if (!lastCalculatedResult) { showError('Calculate first!'); return; }
-            if (currentUser) { checkAndPrepareSubmission(currentUser.name, lastCalculatedResult); }
-            else { showAuthModal('login'); }
-        }
-
-        // AUTH MODAL
-        function showAuthModal(mode) {
-            const modalContent = document.getElementById('authModalContent');
             
-            if (mode === 'login') {
-                modalContent.innerHTML = `
-                    <button class="modal-close-btn" onclick="hideAuthModal()">✕</button>
-                    <div class="auth-icon">🔐</div>
-                    <div class="auth-title">Login to Leaderboard</div>
-                    <div class="auth-subtitle">Enter your credentials to submit your score</div>
-                    <div class="auth-field"><label>Player Name</label><input type="text" id="loginName" placeholder="Enter your name"></div>
-                    <div class="auth-field"><label>Password</label><input type="password" id="loginPassword" placeholder="Enter password"></div>
-                    <button class="auth-btn auth-btn-primary" onclick="handleLogin()">🔓 Login</button>
-                    <div class="auth-switch">Don't have an account? <a onclick="showAuthModal('register')">Register here</a></div>
-                `;
-            } else {
-                modalContent.innerHTML = `
-                    <button class="modal-close-btn" onclick="hideAuthModal()">✕</button>
-                    <div class="auth-icon">✨</div>
-                    <div class="auth-title">Create Account</div>
-                    <div class="auth-subtitle">Register to join the Guild Leaderboard</div>
-                    <div class="auth-field"><label>Player Name</label><input type="text" id="registerName" placeholder="Choose unique name"></div>
-                    <div class="auth-field"><label>Password</label><input type="password" id="registerPassword" placeholder="Create password"></div>
-                    <div class="auth-field"><label>Confirm Password</label><input type="password" id="registerConfirmPassword" placeholder="Confirm password"></div>
-                    <button class="auth-btn auth-btn-primary" onclick="handleRegister()">✨ Create Account</button>
-                    <div class="auth-switch">Already have account? <a onclick="showAuthModal('login')">Login here</a></div>
-                `;
+            // Check if admin is logged in
+            if (isAdminLoggedIn) {
+                showError('❌ <strong>Cannot submit scores as Admin!</strong><br><br>Please logout from Admin panel and login as a regular user to submit scores.');
+                return;
             }
             
-            showModal('authOverlay');
-            setTimeout(() => { const firstInput = modalContent.querySelector('input'); if (firstInput) firstInput.focus(); }, 100);
+            if (currentUser) { 
+                checkAndPrepareSubmission(currentUser.name, lastCalculatedResult); 
+            }
+            else { 
+                showAuthModal('login'); 
+            }
         }
-
-        function hideAuthModal() { hideModal('authOverlay'); }
 
         // HANDLE REGISTRATION
         function handleRegister() {
+            // Double-check admin status
+            if (isAdminLoggedIn) {
+                showError('❌ Cannot register while Admin is logged in!');
+                return;
+            }
+            
             const name = document.getElementById('registerName').value.trim();
             const password = document.getElementById('registerPassword').value;
             const confirmPassword = document.getElementById('registerConfirmPassword').value;
@@ -2579,6 +2623,12 @@
 
         // HANDLE LOGIN
         function handleLogin() {
+            // Double-check admin status
+            if (isAdminLoggedIn) {
+                showError('❌ Cannot login as user while Admin session is active!');
+                return;
+            }
+            
             const name = document.getElementById('loginName').value.trim();
             const password = document.getElementById('loginPassword').value;
 
@@ -2608,18 +2658,35 @@
 
         // CHECK AND PREPARE SUBMISSION
         function checkAndPrepareSubmission(userName, calcData) {
-            if (!currentUser || !currentUser.lbKey) { showError('❌ LB entry not found.'); return; }
+            if (!currentUser || !currentUser.lbKey) { 
+                showError('❌ LB entry not found. Try logging out and back in.'); 
+                return; 
+            }
 
             database.ref('leaderboard/' + currentUser.lbKey).once('value').then(snapshot => {
-                if (!snapshot.exists()) { showError('❌ Entry not found!'); return; }
+                if (!snapshot.exists()) { 
+                    showError('❌ Entry not found! Your account may be corrupted. Contact admin.'); 
+                    return; 
+                }
 
                 const currentScore = snapshot.val().score || 0;
                 const newScore = calcData.value;
 
-                pendingUpdateData = { lbKey: currentUser.lbKey, name: userName, newResult: newScore, oldScore: currentScore, percentDamage: calcData.percentDamage, critChance: calcData.critChance, critDamage: calcData.critDamage };
+                pendingUpdateData = { 
+                    lbKey: currentUser.lbKey, 
+                    name: userName, 
+                    newResult: newScore, 
+                    oldScore: currentScore, 
+                    percentDamage: calcData.percentDamage, 
+                    critChance: calcData.critChance, 
+                    critDamage: calcData.critDamage 
+                };
 
                 showSmartComparisonModal(userName, currentScore, newScore);
-            }).catch(error => { console.error("Error:", error); showError("Failed."); });
+            }).catch(error => { 
+                console.error("Error:", error); 
+                showError('❌ Failed to load your current score. Check your connection.'); 
+            });
         }
 
         // SMART COMPARISON MODAL
@@ -2680,13 +2747,33 @@
             if (!pendingUpdateData) { hideConfirm(); return; }
 
             const { lbKey, name, newResult, percentDamage, critChance, critDamage } = pendingUpdateData;
-            const updatedEntry = { userId: currentUser?.key || null, name: name, score: newResult, percentDamage: percentDamage, critChance: critChance, critDamage: critDamage, timestamp: Date.now(), date: new Date().toLocaleDateString(), time: new Date().toLocaleTimeString() };
+            const updatedEntry = { 
+                userId: currentUser?.key || null, 
+                name: name, 
+                score: newResult, 
+                percentDamage: percentDamage, 
+                critChance: critChance, 
+                critDamage: critDamage, 
+                timestamp: Date.now(), 
+                date: new Date().toLocaleDateString(), 
+                time: new Date().toLocaleTimeString() 
+            };
 
             database.ref('leaderboard/' + lbKey).update(updatedEntry).then(() => {
                 hideConfirm();
-                showSuccess(`<strong>${escapeHtml(name)}</strong>'s updated!<br>New: <strong>${newResult.toFixed(3)}x</strong>`);
+                showSuccess(`<strong>${escapeHtml(name)}</strong>'s score updated!<br>New: <strong>${newResult.toFixed(3)}x</strong>`);
                 pendingUpdateData = null;
-            }).catch(error => { console.error("Error:", error); hideConfirm(); showError("Failed."); pendingUpdateData = null; });
+                
+                // Refresh leaderboard if on guild page
+                if (document.getElementById('page-guild').classList.contains('active')) {
+                    loadLeaderboard();
+                }
+            }).catch(error => { 
+                console.error("Error:", error); 
+                hideConfirm(); 
+                showError('❌ Failed to update score. Please try again.'); 
+                pendingUpdateData = null; 
+            });
         }
 
         function hideConfirm() { hideModal('confirmOverlay'); }
@@ -2751,7 +2838,7 @@
                 });
             }).catch(error => { 
                 console.error("Error:", error); 
-                tbody.innerHTML = '<tr class="placeholder-row"><td colspan="5" style="color:var(--danger)">❌ Failed</td></tr>'; 
+                tbody.innerHTML = '<tr class="placeholder-row"><td colspan="5" style="color:var(--danger)">❌ Failed to load</td></tr>'; 
             });
         }
 
@@ -2760,7 +2847,7 @@
         function clearHistory() { if (confirm('Clear history?')) { localStorage.removeItem('dmgHistory'); document.getElementById('historyList').innerHTML = '<div class="history-empty">No calculations yet</div>'; } }
         function resetPersonalBest() { if (confirm('Reset PB?')) { localStorage.removeItem('maxDmgValue'); document.getElementById('maxLabel').textContent = '0.000x'; } }
 
-        // MODALS - Error/Success always on TOP
+        // MODALS
         function showError(msg) { 
             document.getElementById('errorText').innerHTML = msg; 
             showModal('errorOverlay');
@@ -2806,6 +2893,7 @@
             loadMaxValue(); 
             loadHistory(); 
             checkExistingSession();
+            updateAuthButtonUI(); // Ensure button state is correct on load
             console.log('✅ DFR Calculator ready!');
         });
     </script>
